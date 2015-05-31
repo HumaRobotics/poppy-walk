@@ -53,14 +53,15 @@ def MGD(q,mode = "direct kinematic and jacobian",blas = "with blas"):
     def cross_prod(a,b):
         ax = array([[0,-a[2],a[1]],[a[2],0,-a[0]],[-a[1],a[0],0]])
         return dot(ax,b)
+        
     if mode == "direct kinematic and jacobian":
       JM = zeros((3,2))
       if blas == "with blas":
         JM[:,0] = cross_prod(z,OM)
-        JM[:,1] = cross_prod(y,AM)
+        JM[:,1] = cross_prod(dot(t0,y),AM)
       else:
         JM[:,0] = cross(z,OM)
-        JM[:,1] = cross(y,AM)
+        JM[:,1] = cross(dot(t0,y),AM)
     return OM
 
 
