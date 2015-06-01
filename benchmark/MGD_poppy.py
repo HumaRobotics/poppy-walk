@@ -464,7 +464,7 @@ if __name__ == "__main__":
   q = zeros((25,))
   T0 = time.time()
   for i in range(1000): 
-    a=MGD(q,0.0,0.0,Jacobian=False,bust=False, rarm=False, larm=False, head=True, rleg=False, lleg=False)
+    a=MGD(q,0.0,0.0,Jacobian=True,bust=False, rarm=False, larm=False, head=False, rleg=True, lleg=True)
   dT = time.time()-T0
   print "computation time in micros"
   print dT*1000

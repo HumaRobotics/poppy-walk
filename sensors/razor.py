@@ -9,25 +9,28 @@ logger = logging.getLogger(__name__)
 
 class Razor(T.Thread):
 
-  def __init__(self):
+  def __init__(self,port="auto"):
     T.Thread.__init__(self)
     self.daemon = True
-    # get the list of ports
-    listcom = D.get_available_ports()
-    razorcom = []
-    for com in listcom:
-      try:
-        #test the port
-        a = S.Serial(com, 57600,timeout = 0.1)
-        time.sleep(2)
-        # do not forget to strip the zeros values
-        t = a.readline().strip('\x00')
-        a.close()
-        if len(t)>0:
-          if t[0:5] == '#YPR=':
-            razorcom.append(com)
-      except S.SerialException:
-        pass
+    if port == "auto":
+      # get the list of ports
+      listcom = D.get_available_ports()
+      razorcom = []
+      for com in listcom:
+        try:
+          #test the port
+          a = S.Serial(com, 57600,timeout = 0.1)
+          time.sleep(2)
+          # do not forget to strip the zeros values
+          t = a.readline().strip('\x00')
+          a.close()
+          if len(t)>0:
+            if t[0:5] == '#YPR=':
+              razorcom.append(com)
+        except S.SerialException:
+          pass
+    else:
+      razorcom = [port]
     if len(razorcom) == 1:
       # we got the right port
       print('Razor connected to '+razorcom[0]+'.')
