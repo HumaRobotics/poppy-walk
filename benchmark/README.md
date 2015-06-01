@@ -47,3 +47,6 @@ Here are the computation times in microseconds:
 | ------------- | ---------- | --------------------- |------ | --------------- |
 | ODROID U3     | 976us      | 3723us                | 504us | 1386us          |
 | Intel i5      | 234us      | 922us                 | 109us | 328us           |
+
+The sketch used to compute the Poppy model has been simplified to have most of the points in the same plane (only nose and toes are outside the plane)
+![sketch](Poppy.JPG)
