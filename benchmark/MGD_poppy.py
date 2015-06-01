@@ -2,6 +2,34 @@ from numpy import *
 import time
 
 def MGD(q, theta, phi):
+    # q shape
+    # q[0] : abs_y
+    # q[1] : abs_x
+    # q[2] : abs_z
+    # q[3] : bust_y
+    # q[4] : bust_x
+    # q[5] : l_shoulder_y
+    # q[6] : l_shoulder_x
+    # q[7] : l_arm_z
+    # q[8] : l_elbow_y
+    # q[9] : r_shoulder_y
+    # q[10] : r_shoulder_x
+    # q[11] : r_arm_z
+    # q[12] : r_elbow_y
+    # q[13] : head_z
+    # q[14] : head_y
+    # q[15] : l_hip_x
+    # q[16] : l_hip_z
+    # q[17] : l_hip_y
+    # q[18] : l_knee_y
+    # q[19] : l_ankle_y
+    # q[20] : r_hip_x
+    # q[21] : r_hip_z
+    # q[22] : r_hip_y
+    # q[23] : r_knee_y
+    # q[24] : r_ankle_y
+    
+    # geometric data
     # shoulder position on y
     ysh = 0.11
     # length of upper arm
@@ -28,11 +56,13 @@ def MGD(q, theta, phi):
     xtoe = 0.12
     # heel position on x
     xheel = 0.04
+    
     #definition of axes
     x=array([1,0,0])
     y=array([0,1,0])
     z=array([0,0,1])
     
+    # computation of sin and cos
     s = sin(q*pi/180.0)
     c = cos(q*pi/180.0)
     sphi = sin(phi*pi/180.0)
@@ -53,36 +83,36 @@ def MGD(q, theta, phi):
     rot0=rot_mat("y",stheta,ctheta)
     rot1=rot_mat("x",sphi,cphi)
     
-    rott0=rot_mat("y",s[10],c[10])
-    rott1=rot_mat("x",s[11],c[11])
-    rott2=rot_mat("z",s[12],c[12])
-    rott3=rot_mat("y",s[13],c[13])
-    rott4=rot_mat("x",s[14],c[14])
+    rott0=rot_mat("y",s[0],c[0])
+    rott1=rot_mat("x",s[1],c[1])
+    rott2=rot_mat("z",s[2],c[2])
+    rott3=rot_mat("y",s[3],c[3])
+    rott4=rot_mat("x",s[4],c[4])
     
-    rotar0=rot_mat("y",s[4],c[4])
-    rotar1=rot_mat("x",s[5],c[5])
-    rotar2=rot_mat("z",s[6],c[6])
-    rotar3=rot_mat("y",s[7],c[7])
+    rotal0=rot_mat("y",s[5],c[5])
+    rotal1=rot_mat("x",s[6],c[6])
+    rotal2=rot_mat("z",s[7],c[7])
+    rotal3=rot_mat("y",s[8],c[8])
     
-    rotal0=rot_mat("y",s[0],c[0])
-    rotal1=rot_mat("x",s[1],c[1])
-    rotal2=rot_mat("z",s[2],c[2])
-    rotal3=rot_mat("y",s[3],c[3])
+    rotar0=rot_mat("y",s[9],c[9])
+    rotar1=rot_mat("x",s[10],c[10])
+    rotar2=rot_mat("z",s[11],c[11])
+    rotar3=rot_mat("y",s[12],c[12])
     
-    roth0=rot_mat("z",s[8],c[8])
-    roth1=rot_mat("y",s[9],c[9])
-    
-    rotlr0=rot_mat("x",s[20],c[20])
-    rotlr1=rot_mat("z",s[21],c[21])
-    rotlr2=rot_mat("y",s[22],c[22])
-    rotlr3=rot_mat("y",s[23],c[23])
-    rotlr4=rot_mat("y",s[24],c[24])
+    roth0=rot_mat("z",s[13],c[13])
+    roth1=rot_mat("y",s[14],c[14])
     
     rotll0=rot_mat("x",s[15],c[15])
     rotll1=rot_mat("z",s[16],c[16])
     rotll2=rot_mat("y",s[17],c[17])
     rotll3=rot_mat("y",s[18],c[18])
     rotll4=rot_mat("y",s[19],c[19])
+    
+    rotlr0=rot_mat("x",s[20],c[20])
+    rotlr1=rot_mat("z",s[21],c[21])
+    rotlr2=rot_mat("y",s[22],c[22])
+    rotlr3=rot_mat("y",s[23],c[23])
+    rotlr4=rot_mat("y",s[24],c[24])
     
     # transformations
     t1 = dot(rot0,rot1)
