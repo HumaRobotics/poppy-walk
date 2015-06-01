@@ -49,3 +49,32 @@ class PlayStepModule(WalkerModule):
             
         print "foot not landed"
         return False
+        
+        
+class ControlZMP(WalkerModule):
+    def __init__(self):
+        WalkerModule.__init__(self)
+        self.ZMPpos = []
+    
+    def stepRightExecute(self, motorPositions, motorNextPositions):
+        ZMPpos = [] #position under right foot
+        self.controlZMP( motorPositions, motorNextPositions)
+        
+    def stepLeftExecute(self, motorPositions, motorNextPositions):
+        ZMPpos = [] #position under left foot
+        self.controlZMP( motorPositions, motorNextPositions)
+        
+    def doubleSupportRightExecute(self, motorPositions, motorNextPositions):
+        ZMPpos = [] #between feet
+        self.controlZMP( motorPositions, motorNextPositions)
+        
+    def doubleSupportLeftExecute(self, motorPositions, motorNextPositions):
+        ZMPpos = [] #between feet
+        self.controlZMP( motorPositions, motorNextPositions)
+        
+        
+    def controlZMP(self, motorPositions, motorNextPositions):
+        print "controlling ZMP"
+        pass
+        
+        
