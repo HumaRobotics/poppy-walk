@@ -10,11 +10,31 @@ import time
 ### Robot config ###
 FULL_POPPY_HUMANOID = True
 robot_configuration_file = "/home/poppy/poppy.json" #Needed only if FULL_POPPY_HUMANOID is False
+
+HAS_IMU = False
+imu_model = "razor"
+
+HAS_FOOT_SENSORS = False
 ###
 
 ### Activated modules ###
 
+
+HAS_FORWARD_KINEMATICS = False
+HAS_INVERSE_KINEMATICS = False
+
+USE_ZMP = False
+USE_PHASE_DIAGRAM = False
+
+up_foot_trajectory = "CPG" #CPG|play_move
+
+DO_TORSO_STABILIZATION = False
+torso_stabilization = "vertical"
+
+
 ###
+
+#TODO conditional imports here
 
 
 #TODO: when we have several functions of that type, create a utils scipt
@@ -113,7 +133,7 @@ def stopWalk(poppy, side):
         #final step starting with right foot on front 
         pass
     else:
-        raise Error('poppy-walk: doubleSupport argument should be "right" or "left"')
+        raise Error('poppy-walk: stopWalk argument should be "right" or "left"')
 
 def cleanWalk(poppy):
     #clean, sit the robot...
@@ -127,19 +147,26 @@ def cleanWalk(poppy):
 
 poppy = None #createPoppyCreature()
 
-initWalk(poppy)
 
-side = "right"
+import Walker
 
-startWalk(poppy, side )
+walker = Walker.Walker(poppy)
+walker.stepRight()
 
-counter = 5
-while counter > 0 and not mustStopWalk(poppy):
-    fullStep(poppy, side )
-    counter -=1
+
+#~ initWalk(poppy)
+
+#~ side = "right"
+
+#~ startWalk(poppy, side )
+
+#~ counter = 5
+#~ while counter > 0 and not mustStopWalk(poppy):
+    #~ fullStep(poppy, side )
+    #~ counter -=1
     
-stopWalk(poppy, side )
-cleanWalk(poppy)
+#~ stopWalk(poppy, side )
+#~ cleanWalk(poppy)
 
 
 
