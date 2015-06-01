@@ -10,11 +10,31 @@ import time
 ### Robot config ###
 FULL_POPPY_HUMANOID = True
 robot_configuration_file = "/home/poppy/poppy.json" #Needed only if FULL_POPPY_HUMANOID is False
+
+HAS_IMU = False
+imu_model = "razor"
+
+HAS_FOOT_SENSORS = False
 ###
 
 ### Activated modules ###
 
+
+HAS_FORWARD_KINEMATICS = False
+HAS_INVERSE_KINEMATICS = False
+
+USE_ZMP = False
+USE_PHASE_DIAGRAM = False
+
+up_foot_trajectory = "CPG" #CPG|play_move
+
+DO_TORSO_STABILIZATION = False
+torso_stabilization = "vertical"
+
+
 ###
+
+#TODO conditional imports here
 
 
 #TODO: when we have several functions of that type, create a utils scipt
@@ -42,84 +62,7 @@ def createPoppyCreature():
         
     return poppy
     
-def initWalk(poppy):
-    #any initialization (modules, put robot standing...)
-    #no walk moves yet !
-    pass
-    
-def startWalk(poppy, side):
-    print "starting Walk. Foot ", side, " in front"
-    if side == "left":
-        #initial step with left foot on front 
-        pass
-    elif side=="right":
-        #initial step with right foot on front 
-        pass
-    else:
-        raise Error('poppy-walk: doubleSupport argument should be "right" or "left"')
-    
-def step(poppy, side):
-    print "step. Foot ", side, " up"
-    if side == "left":
-        #do step with left foot up and right foot on the floor
-        pass
-    elif side=="right":
-        #do step with right foot up and left foot on the floor
-        pass
-    else:
-        raise Error('poppy-walk: step argument should be "right" or "left"')
-        
-def doubleSupport(poppy, side):
-    print "Double support. Foot ", side, " in front"
-    if side == "left":
-        #double support phase with left foot on front and right foot on back
-        pass
-    elif side=="right":
-        #double support phase with right foot on front and left foot on back
-        pass
-    else:
-        raise Error('poppy-walk: doubleSupport argument should be "right" or "left"')
 
-def fullStep(poppy, side):
-    #starting from double support with "side" step in front
-    #do full walk cycle until back to initial position
-    doubleSupport(poppy, side)
-    
-    if side == "right":
-        side="left"
-    else:
-        side = "right"
-        
-    step(poppy, side)
-    doubleSupport(poppy, side)
-    
-    if side == "right":
-        side="left"
-    else:
-        side = "right"
-    
-    step(poppy, side)
-
-def mustStopWalk(poppy):
-    #destination reached, fall...
-    return False
-
-def stopWalk(poppy, side):
-    print "stopping Walk."
-    if side == "left":
-        #final step starting with left foot on front 
-        pass
-    elif side=="right":
-        #final step starting with right foot on front 
-        pass
-    else:
-        raise Error('poppy-walk: doubleSupport argument should be "right" or "left"')
-
-def cleanWalk(poppy):
-    #clean, sit the robot...
-    if not FULL_POPPY_HUMANOID:
-        poppy.stop_sync()
-        poppy.close()
 
 #############
 ## MAIN
@@ -127,19 +70,25 @@ def cleanWalk(poppy):
 
 poppy = None #createPoppyCreature()
 
-initWalk(poppy)
 
-side = "right"
+import Walker
 
-startWalk(poppy, side )
+walker = Walker.Walker(poppy)
 
-counter = 5
-while counter > 0 and not mustStopWalk(poppy):
-    fullStep(poppy, side )
-    counter -=1
-    
-stopWalk(poppy, side )
-cleanWalk(poppy)
+walker.init()
+walker.startWalk()
+
+for i in range(0, 10):
+    walker.oneStep()
+
+walker.stopWalk()
+
+walker.clean()
+
+
+if not FULL_POPPY_HUMANOID:
+    poppy.stop_sync()
+    poppy.close()
 
 
 
