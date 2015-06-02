@@ -68,8 +68,10 @@ def createPoppyCreature():
 ## MAIN
 #############
 
-poppy = None #createPoppyCreature()
+poppy = createPoppyCreature()
 
+poppy.compliant = False
+time.sleep(0.1)
 
 import Walker
 
@@ -78,13 +80,15 @@ walker = Walker.Walker(poppy)
 walker.init()
 walker.startWalk()
 
-for i in range(0, 10):
+for i in range(0, 4):
     walker.oneStep()
 
 walker.stopWalk()
 
 walker.clean()
 
+poppy.compliant = True	
+time.sleep(0.1)
 
 if not FULL_POPPY_HUMANOID:
     poppy.stop_sync()

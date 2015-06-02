@@ -16,34 +16,38 @@ class Walker:
         self.leftStepModules = {}
         self.leftDoubleSupportModules = {}
         
-        self.rightStepModules["swingFoot"] = WalkerModule.PlayStepModule("rightStep.json")
-        self.leftStepModules["swingFoot"] = WalkerModule.PlayStepModule("leftStep.json")
+        self.rightStepModules["swingFoot"] = WalkerModule.MOCKPlayStepModule("rightStep.json")
+        self.leftStepModules["swingFoot"] = WalkerModule.MOCKPlayStepModule("leftStep.json")
         
         self.walkModules["balancing"] = WalkerModule.ControlZMP()
-        self.walkModules["torso vertical"] = WalkerModule.AngularControl("r_hip_x", "abs_x", inverse=True)
+        self.walkModules["torso vertical"] = WalkerModule.AngularControl("bust_x", "abs_x", inverse=True)
         
     ###
         
     def oneStep(self):
         if self.stepSide == "right":
             self.doubleSupportRight()
-            self.stepRight()
             self.stepSide = "left"
+            self.stepLeft()
+            
         else:
             self.doubleSupportLeft()
-            self.stepLeft()
             self.stepSide = "right"
+            self.stepRight()
+            
     
     def readMotorPositions(self):
         motorPositions = {}
-        #~ for m in self.robot.motors:
-            #~ motorPositions[m.name] = m.present_position
+        if self.robot is not None:
+            for m in self.robot.motors:
+                motorPositions[m.name] = m.present_position
+        #~ print motorPositions
         return motorPositions
         
     def setMotorPositions(self, positions):
-        pass
-        #~ for m in self.robot.motors:
-            #~ m.goto_position(positions[m.name], self.dt, wait=False)
+        if self.robot is not None:
+            for m in self.robot.motors:
+                m.goto_position(positions[m.name], self.dt, wait=False)
         
     ###
         
@@ -53,6 +57,7 @@ class Walker:
             
             #read motor positions
             motorPositions = self.readMotorPositions()
+            
             motorNextPositions = copy.deepcopy(motorPositions)
 
         
@@ -94,7 +99,7 @@ class Walker:
             
     def doubleSupportRight(self):
         print "### starting double support right ###"
-        while not self.walkModules["balancing"].canLiftRightFoot():
+        while not self.walkModules["balancing"].canLiftLeftFoot():
             
             #read motor positions
             motorPositions = self.readMotorPositions()
@@ -104,10 +109,10 @@ class Walker:
             #modify motor next positions by each module
             for m in self.walkModules.values():
                 motorNextPositions = m.execute(motorPositions, motorNextPositions, phase="right double support")
-                
+                #~ print motorNextPositions
             for m in self.rightDoubleSupportModules.values():
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
-                
+                #~ print motorNextPositions                
             #Apply modified values
             self.setMotorPositions(motorNextPositions)
             
@@ -116,7 +121,7 @@ class Walker:
         
     def doubleSupportLeft(self):
         print "### starting double support left ###"
-        while not self.walkModules["balancing"].canLiftLeftFoot():
+        while not self.walkModules["balancing"].canLiftRightFoot():
             
             #read motor positions
             motorPositions = self.readMotorPositions()
