@@ -16,8 +16,8 @@ class Walker:
         self.leftStepModules = {}
         self.leftDoubleSupportModules = {}
         
-        self.rightStepModules["swingFoot"] = WalkerModule.PlayStepModule("rightStep.json")
-        self.leftStepModules["swingFoot"] = WalkerModule.PlayStepModule("leftStep.json")
+        self.rightStepModules["swingFoot"] = MOCKWalkerModule.PlayStepModule("rightStep.json")
+        self.leftStepModules["swingFoot"] = MOCKWalkerModule.PlayStepModule("leftStep.json")
         
         self.walkModules["balancing"] = WalkerModule.ControlZMP()
         self.walkModules["torso vertical"] = WalkerModule.AngularControl("r_hip_x", "abs_x", inverse=True)
@@ -27,23 +27,26 @@ class Walker:
     def oneStep(self):
         if self.stepSide == "right":
             self.doubleSupportRight()
-            self.stepRight()
             self.stepSide = "left"
+            self.stepLeft()
+            
         else:
             self.doubleSupportLeft()
-            self.stepLeft()
             self.stepSide = "right"
+            self.stepRight()
+            
     
     def readMotorPositions(self):
         motorPositions = {}
-        #~ for m in self.robot.motors:
-            #~ motorPositions[m.name] = m.present_position
+        if self.robot is not None:
+            for m in self.robot.motors:
+                motorPositions[m.name] = m.present_position
         return motorPositions
         
     def setMotorPositions(self, positions):
-        pass
-        #~ for m in self.robot.motors:
-            #~ m.goto_position(positions[m.name], self.dt, wait=False)
+        if self.robot is not None:
+            for m in self.robot.motors:
+                m.goto_position(positions[m.name], self.dt, wait=False)
         
     ###
         
@@ -94,7 +97,7 @@ class Walker:
             
     def doubleSupportRight(self):
         print "### starting double support right ###"
-        while not self.walkModules["balancing"].canLiftRightFoot():
+        while not self.walkModules["balancing"].canLiftLeftFoot():
             
             #read motor positions
             motorPositions = self.readMotorPositions()
@@ -116,7 +119,7 @@ class Walker:
         
     def doubleSupportLeft(self):
         print "### starting double support left ###"
-        while not self.walkModules["balancing"].canLiftLeftFoot():
+        while not self.walkModules["balancing"].canLiftRightFoot():
             
             #read motor positions
             motorPositions = self.readMotorPositions()
