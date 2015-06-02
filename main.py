@@ -70,8 +70,11 @@ def createPoppyCreature():
 
 poppy = createPoppyCreature()
 
-poppy.compliant = False
-time.sleep(0.1)
+for m in poppy.motors:
+    m.compliant = False
+    m.goal_position = 0.0
+  
+time.sleep(3)    
 
 import Walker
 
@@ -87,8 +90,10 @@ walker.stopWalk()
 
 walker.clean()
 
-poppy.compliant = True	
-time.sleep(0.1)
+for m in poppy.motors:
+    m.compliant = True
+    
+time.sleep(1)
 
 if not FULL_POPPY_HUMANOID:
     poppy.stop_sync()

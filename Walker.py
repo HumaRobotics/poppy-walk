@@ -6,7 +6,7 @@ import random, time, copy
 class Walker:
     def __init__(self, robot):
         self.robot = robot
-        self.dt = 0.2 #seconds
+        self.dt = 0.05 #seconds
         
         self.stepSide = "right"
         
@@ -16,11 +16,11 @@ class Walker:
         self.leftStepModules = {}
         self.leftDoubleSupportModules = {}
         
-        self.rightStepModules["swingFoot"] = WalkerModule.MOCKPlayStepModule("rightStep.json")
-        self.leftStepModules["swingFoot"] = WalkerModule.MOCKPlayStepModule("leftStep.json")
+        self.rightStepModules["swingFoot"] = WalkerModule.PlayStepModule("json/rlegstep.json")
+        self.leftStepModules["swingFoot"] = WalkerModule.PlayStepModule("json/llegstep.json")
         
         self.walkModules["balancing"] = WalkerModule.ControlZMP()
-        self.walkModules["torso vertical"] = WalkerModule.AngularControl("bust_x", "abs_x", inverse=True)
+        self.walkModules["torso vertical"] = WalkerModule.AngularControl("r_hip_x", "abs_x", inverse=True)
         
     ###
         
