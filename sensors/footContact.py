@@ -2,6 +2,11 @@ import threading as T
 from yocto_api import *
 from yocto_anbutton import *
 
+c1=0
+c2=0
+c3=0
+c4=0
+
 class YoctoFootContact(T.Thread):
   def __init__(self):
     T.Thread.__init__(self)
@@ -28,10 +33,6 @@ class YoctoFootContact(T.Thread):
     self.channel4 = YAnButton.FindAnButton(serial + '.anButton4')
     self.channel4.registerValueCallback(button4Callback)
       
-    self._rightFront = 0.0
-    self._rightBack = 0.0
-    self._leftFront = 0.0
-    self._leftBack = 0.0
     self._goon = True
     print "Yocto buttons connected."
     
@@ -39,17 +40,25 @@ class YoctoFootContact(T.Thread):
     while self._goon:
       YAPI.Sleep(1)
 
-  def button1Callback(fct, measure):
-    self._rightFront = int(measure)
-
-  def button2Callback(fct, measure):
-    self._rightFront = int(measure)
-  
-  def button3Callback(fct, measure):
-    self._rightFront = int(measure)
+  @property
+  def rightFront(self):
+    global c2
+    return c2
     
-  def button4Callback(fct, measure):
-    self._rightFront = int(measure)
+  @property
+  def rightBack(self):
+    global c1
+    return c1
+    
+  @property
+  def leftFront(self):
+    global c3
+    return c3
+    
+  @property
+  def leftBack(self):
+    global c4
+    return c4
   
   def stop(self):
     self.channel1.registerValueCallback(None)
@@ -59,3 +68,19 @@ class YoctoFootContact(T.Thread):
     self._goon = False
     time.sleep(1)
     print "Yocto buttons disconnected."
+    
+def button1Callback(fct, measure):
+  global c1
+  c1 = int(measure)
+
+def button2Callback(fct, measure):
+  global c2
+  c2 = int(measure)
+
+def button3Callback(fct, measure):
+  global c3
+  c3 = int(measure)
+  
+def button4Callback(fct, measure):
+  global c4
+  c4 = int(measure)
