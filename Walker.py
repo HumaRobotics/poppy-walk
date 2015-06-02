@@ -16,11 +16,11 @@ class Walker:
         self.leftStepModules = {}
         self.leftDoubleSupportModules = {}
         
-        self.rightStepModules["swingFoot"] = MOCKWalkerModule.PlayStepModule("rightStep.json")
-        self.leftStepModules["swingFoot"] = MOCKWalkerModule.PlayStepModule("leftStep.json")
+        self.rightStepModules["swingFoot"] = WalkerModule.MOCKPlayStepModule("rightStep.json")
+        self.leftStepModules["swingFoot"] = WalkerModule.MOCKPlayStepModule("leftStep.json")
         
         self.walkModules["balancing"] = WalkerModule.ControlZMP()
-        self.walkModules["torso vertical"] = WalkerModule.AngularControl("r_hip_x", "abs_x", inverse=True)
+        self.walkModules["torso vertical"] = WalkerModule.AngularControl("bust_x", "abs_x", inverse=True)
         
     ###
         
@@ -41,6 +41,7 @@ class Walker:
         if self.robot is not None:
             for m in self.robot.motors:
                 motorPositions[m.name] = m.present_position
+        #~ print motorPositions
         return motorPositions
         
     def setMotorPositions(self, positions):
@@ -56,6 +57,7 @@ class Walker:
             
             #read motor positions
             motorPositions = self.readMotorPositions()
+            
             motorNextPositions = copy.deepcopy(motorPositions)
 
         
@@ -107,10 +109,10 @@ class Walker:
             #modify motor next positions by each module
             for m in self.walkModules.values():
                 motorNextPositions = m.execute(motorPositions, motorNextPositions, phase="right double support")
-                
+                #~ print motorNextPositions
             for m in self.rightDoubleSupportModules.values():
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
-                
+                #~ print motorNextPositions                
             #Apply modified values
             self.setMotorPositions(motorNextPositions)
             

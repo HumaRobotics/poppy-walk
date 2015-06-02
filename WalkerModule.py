@@ -6,25 +6,25 @@ class WalkerModule:
         
     def execute(self, motorPositions, motorNextPositions, phase=""):
         if phase == "right step":
-            self.stepRightExecute(motorPositions, motorNextPositions)
+            return self.stepRightExecute(motorPositions, motorNextPositions)
         elif phase == "right double support":
-            self.doubleSupportRightExecute(motorPositions, motorNextPositions)
+            return self.doubleSupportRightExecute(motorPositions, motorNextPositions)
         elif phase == "left step":
-            self.stepLeftExecute(motorPositions, motorNextPositions)
+            return self.stepLeftExecute(motorPositions, motorNextPositions)
         elif phase == "left double support":
-            self.doubleSupportLeftExecute(motorPositions, motorNextPositions)
+            return self.doubleSupportLeftExecute(motorPositions, motorNextPositions)
             
     def stepRightExecute(self, motorPositions, motorNextPositions):
-        pass
+        return motorNextPositions
         
     def stepLeftExecute(self, motorPositions, motorNextPositions):
-        pass
+        return motorNextPositions
         
     def doubleSupportRightExecute(self, motorPositions, motorNextPositions):
-        pass
+        return motorNextPositions
         
     def doubleSupportLeftExecute(self, motorPositions, motorNextPositions):
-        pass
+        return motorNextPositions
         
 #################
         
@@ -36,8 +36,8 @@ class MOCKPlayStepModule(WalkerModule):
         WalkerModule.__init__(self)
 
         
-    def execute(self, motorPositions, motorNextPosition, phase=""):
-        pass
+    def execute(self, motorPositions, motorNextPositions, phase=""):
+        return motorNextPositions
         
         
     def footLanded(self):
@@ -69,7 +69,7 @@ class PlayStepModule(WalkerModule):
     def execute(self, motorPositions, motorNextPosition, phase=""):
         if self.finished:
             print "move ",self.filename," finished"
-            return
+            return motorNextPositions
         
         #play one step of the file
         nextPosition = self.move.positions[index]
@@ -79,7 +79,7 @@ class PlayStepModule(WalkerModule):
         index +=1
         if index >= len(self.move.positions):
             self.finished = True
-        
+        return motorNextPositions
         
     def footLanded(self):
         return self.finished
@@ -101,24 +101,24 @@ class ControlZMP(WalkerModule):
     
     def stepRightExecute(self, motorPositions, motorNextPositions):
         ZMPpos = [] #position under right foot
-        self.controlZMP( motorPositions, motorNextPositions)
+        return self.controlZMP( motorPositions, motorNextPositions)
         
     def stepLeftExecute(self, motorPositions, motorNextPositions):
         ZMPpos = [] #position under left foot
-        self.controlZMP( motorPositions, motorNextPositions)
+        return self.controlZMP( motorPositions, motorNextPositions)
         
     def doubleSupportRightExecute(self, motorPositions, motorNextPositions):
         ZMPpos = [] #between feet
-        self.controlZMP( motorPositions, motorNextPositions)
+        return self.controlZMP( motorPositions, motorNextPositions)
         
     def doubleSupportLeftExecute(self, motorPositions, motorNextPositions):
         ZMPpos = [] #between feet
-        self.controlZMP( motorPositions, motorNextPositions)
+        return self.controlZMP( motorPositions, motorNextPositions)
         
         
     def controlZMP(self, motorPositions, motorNextPositions):
         #~ print "controlling ZMP"
-        pass
+        return motorNextPositions
         
     def canLiftLeftFoot(self):
         
@@ -157,16 +157,17 @@ class AngularControl(WalkerModule):
         self.scale = scale
         
     def execute(self, motorPositions, motorNextPositions, phase=""):
-        return
+
         target = self.scale*(motorPositions[self.master] - self.referenceMaster)
         if self.inverse:
             target = -target
             
         
-        motorNextPosition[self.slave] = target + self.referenceSlave
+        motorNextPositions[self.slave] = target + self.referenceSlave
         
-        print "angular control: master ",motorPositions[self.master] , ", slave next ",motorNextPosition[self.slave]
+        print "angular control: master ",motorPositions[self.master] , ", slave next ",motorNextPositions[self.slave]
             
+        return motorNextPositions
         
         
         
