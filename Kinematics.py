@@ -11,7 +11,7 @@ class Kinematics:
         
     def updateModel(self, q):
         #q: liste of motor angles, order TO DEFINE
-        print "compute model"
+        #~ print "compute model"
         pass
         
     def getPosition(self, fromRef, toRef, point = array([0.,0.,0.])):

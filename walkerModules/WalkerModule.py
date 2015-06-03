@@ -64,8 +64,11 @@ class AngularControl(WalkerModule):
         self.scale = scale
         
     def execute(self, motorPositions, motorNextPositions, phase=""):
+        if self.master is "constant":
+            target = self.referenceMaster
+        else:
+            target = self.scale*(motorPositions[self.master] - self.referenceMaster)
 
-        target = self.scale*(motorPositions[self.master] - self.referenceMaster)
         if self.inverse:
             target = -target
             

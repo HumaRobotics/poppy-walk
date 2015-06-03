@@ -63,7 +63,23 @@ class Walker:
         # control of torso
         if HAS_REAL_ROBOT :
             self.walkModules["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
-                    
+
+        self.walkModules["keep bust_x"] = AngularControl("constant", "bust_x")
+        self.walkModules["keep bust_y"] = AngularControl("constant", "bust_y")                   
+        self.walkModules["keep abs_z"] = AngularControl("constant", "abs_z")
+        self.walkModules["keep abs_y"] = AngularControl("constant", "abs_y") 
+        
+        self.leftStepModules["keep r_hip_z"] = AngularControl("constant", "r_hip_z") 
+        self.leftStepModules["keep r_hip_y"] = AngularControl("constant", "r_hip_y") 
+        self.leftStepModules["keep r_hip_x"] = AngularControl("constant", "r_hip_x") 
+        self.leftStepModules["keep r_knee_y"] = AngularControl("constant", "r_knee_y") 
+        self.leftStepModules["keep r_ankle_y"] = AngularControl("constant", "r_ankle_y") 
+        
+        self.rightStepModules["keep l_hip_z"] = AngularControl("constant", "l_hip_z") 
+        self.rightStepModules["keep l_hip_y"] = AngularControl("constant", "l_hip_y") 
+        self.rightStepModules["keep l_hip_x"] = AngularControl("constant", "l_hip_x") 
+        self.rightStepModules["keep l_knee_y"] = AngularControl("constant", "l_knee_y") 
+        self.rightStepModules["keep l_ankle_y"] = AngularControl("constant", "l_ankle_y") 
         # balancing module
         self.walkModules["balancing"] = ControlZMP(self.kinematics)
     ###
