@@ -10,7 +10,7 @@ import random, time, copy
 # PARAMATERS
 #############
 
-HAS_REAL_ROBOT = False
+HAS_REAL_ROBOT = True
 
 ### Robot config ###
 HAS_IMU = False

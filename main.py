@@ -2,7 +2,7 @@
 
 import time
 
-HAS_REAL_ROBOT = False
+HAS_REAL_ROBOT = True
 
 #############
 # PARAMATERS
