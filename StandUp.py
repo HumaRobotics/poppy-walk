@@ -2,31 +2,57 @@
 
 import sensors
 import pypot.robot
-import time
+import time,sys
 
 # first plug the razor !
-razor = sensors.razor.Razor()
-razor.start()
-foot = sensors.footContact.YoctoFootContact()
-foot.start()
-poppy = pypot.robot.from_json("/home/poppy/poppy.json")
-poppy.start_sync()
-
-# set the robot to stand-up position
-speedmax = 10
-for m in poppy.motors:
-  m.moving_speed = speedmax
-  m.compliant = False
-  m.goal_position = 0
+all_connected = True
+try:
+  razor = sensors.razor.Razor()
+except:
+  all_connected = False
+  raise
+if all_connected == True:
+  try:
+    foot = sensors.footContact.YoctoFootContact()
+  except:
+    razor.stop()
+    raise
+    all_connected = False
+if all_connected == True:
+  try:
+    poppy = pypot.robot.from_json("/home/poppy/poppy.json")
+  except:
+    razor.stop()
+    foot.stop()
+    raise
+    all_connected = False
+if all_connected == True:
+  foot.start()
+  razor.start()
+  poppy.start_sync()
   
-time.sleep(5)
+  # set the robot to stand-up position
+  speedmax = 10
+  for m in poppy.motors:
+    m.moving_speed = speedmax
+    m.compliant = False
+    m.goal_position = 0
+    
+  time.sleep(5)
+  
+  print foot.rightFront
+  print foot.rightBack
+  print foot.leftFront
+  print foot.leftBack
+  print razor.eul
+  
+  for m in poppy.motors:
+    m.compliant = True
+  
+  razor.stop()
+  foot.stop()
+  poppy.close()
+else:
+  print "one of the connection aborted"
 
-print foot.rightFront
-print foot.rightBack
-print foot.leftFront
-print foot.leftBack
-print razor.eul
-
-razor.stop()
-foot.stop()
-poppy.close()
+sys.exit()

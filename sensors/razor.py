@@ -102,24 +102,32 @@ class Razor(T.Thread):
             l = l.replace('#YPR=','')
             try:
               self._eul = map(float,l.split(','))
+            except:
+              pass
           # accelerations
           if l[0:5]=='#A-R=':
             l = l.replace('\r\n','')
             l = l.replace('#A-R=','')
             try:
               self._acc = map(float,l.split(','))
+            except:
+              pass
           # magnetic field
           if l[0:5]=='#M-R=':
             l = l.replace('\r\n','')
             l = l.replace('#M-R=','')
             try:
               self._mag = map(float,l.split(','))
+            except:
+              pass
           # attitude rates
           if l[0:5]=='#G-R=':
             l = l.replace('\r\n','')
             l = l.replace('#G-R=','')
             try:
               self._gyr = map(float,l.split(','))
+            except:
+              pass
         
   def stop(self):
     self._goon = False

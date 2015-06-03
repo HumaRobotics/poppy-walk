@@ -1,13 +1,13 @@
-import sensors as S
-import pypot.robot as R
-import time as T
+import razor
+import pypot.robot 
+import time
 
-rb = R.from_json("/home/poppy/poppy.json")
-rb.start_sync()
-rz = S.razor.Razor()
+rz = razor.Razor()
 rz.start()
+rb = pypot.robot.from_json("/home/poppy/poppy.json")
+rb.start_sync()
 
-T.sleep(5)
+time.sleep(5)
 print rb.head_z.present_position
 print rz.eul
 
