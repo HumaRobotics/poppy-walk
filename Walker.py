@@ -1,5 +1,7 @@
 
-import WalkerModule
+from walkerModules.WalkerModule import *
+from walkerModules.PlayJsonModule import PlayJsonModule
+from walkerModules.ControlZMP import ControlZMP
 import Kinematics
 
 import random, time, copy
@@ -52,18 +54,18 @@ class Walker:
         
         # foot movement when not on the ground
         if HAS_REAL_ROBOT :
-            self.rightStepModules["swingFoot"] = WalkerModule.PlayStepModule("json/rlegstep.json")
-            self.leftStepModules["swingFoot"] = WalkerModule.PlayStepModule("json/llegstep.json")
+            self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep.json")
+            self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep.json")
         else:
-            self.rightStepModules["swingFoot"] = WalkerModule.MOCKPlayStepModule("json/rlegstep.json")
-            self.leftStepModules["swingFoot"] = WalkerModule.MOCKPlayStepModule("json/llegstep.json")    
+            self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep.json")
+            self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep.json")    
         
         # control of torso
         if HAS_REAL_ROBOT :
-            self.walkModules["torso vertical"] = WalkerModule.AngularControl("r_hip_x", "abs_x", inverse=True)
+            self.walkModules["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
                     
         # balancing module
-        self.walkModules["balancing"] = WalkerModule.ControlZMP(self.kinematics)
+        self.walkModules["balancing"] = ControlZMP(self.kinematics)
     ###
         
     def oneStep(self):
@@ -80,11 +82,11 @@ class Walker:
     
     def readMotorPositions(self):
         motorPositions = {}
-        motorPositionsList = []
+        motorPositionsList = [0.]*25
         if self.robot is not None:
             for m in self.robot.motors:
                 motorPositions[m.name] = m.present_position
-                motorPositionsList.append(motorPositions[m.name])
+                motorPositionsList[self.kinematics.motorsOrder[m.name]] =motorPositions[m.name]
         #~ print motorPositions
         self.kinematics.updateModel(motorPositionsList)
         
