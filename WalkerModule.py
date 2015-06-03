@@ -1,4 +1,5 @@
 import random
+import Kinematics
 
 class WalkerModule:
     def __init__(self):
@@ -99,8 +100,9 @@ class PlayStepModule(WalkerModule):
 ###############      
         
 class ControlZMP(WalkerModule):
-    def __init__(self):
+    def __init__(self, kinematics):
         WalkerModule.__init__(self)
+        self.kinematics = kinematics
         self.ZMPpos = []
     
     def stepRightExecute(self, motorPositions, motorNextPositions):
@@ -121,6 +123,8 @@ class ControlZMP(WalkerModule):
         
         
     def controlZMP(self, motorPositions, motorNextPositions):
+        speed = self.kinematics.getSpeed("pelvis", "right_foot")
+        #...
         #~ print "controlling ZMP"
         return motorNextPositions
         
