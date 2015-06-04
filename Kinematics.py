@@ -413,13 +413,28 @@ class Kinematics:
 				self.points["l_toe"]["jacobian"][:,18] = cross_prod(dot(tll2,y),QS)
 				self.points["l_toe"]["jacobian"][:,19] = cross_prod(dot(tll3,y),RS)
         
-    def getPosition(self, fromRef, toRef, point = array([0.,0.,0.])):
-        #exemple razorPos = getPosition("pelvis", "r_foot", point = array([0.2,-0.3,0.])), with [0.2,-0.3,0.] position of razor in pelvis referential
-        return array([0.,0.,0.])
-        
+    """ This method returns the coordinates of a point with respect to the following orthonormal frame :
+	- Center is G point (stomach)
+	- Z axis is vertical with respect to gravity directed upward
+	- X axis is linked to the pelvis solid and directed forward
+	- Y axis is defined so that XYZ frame is direct
+	The list of the available points is :
+	sternum, r[l]_shoulder, r[l]_elbow, r[l]_hand, neck, nose, pelvis, r[l]_hip, r[l]_knee, r[l]_ankle, r[l]_toe
+	"""
+	def getPosition(self, pointName):
+        if points.has_key(pointName):
+			return self.points[pointName]["position"]
+		else:
+			raise Exception,"No point named: " + pointName
+    
+	def getJacobian(self, pointName):
+        if points.has_key(pointName):
+			return self.points[pointName]["jacobian"]
+		else:
+			raise Exception,"No point named: " + pointName
+	
     def getSpeed(self, fromRef, toRef, point = array([0.,0.,0.])):
-        #exemple razorSpeed = getSpeed("pelvis", "r_foot", point = array([0.2,-0.3,0.])), with [0.2,-0.3,0.] position of razor in pelvis referential
-        return array([0.,0.,0.])
+		raise NotImplementedError
         
 def rot_mat(axe,s,c):
     if axe == "x":
