@@ -105,8 +105,15 @@ class Walker:
             for m in self.robot.motors:
                 motorPositions[m.name] = m.present_position
                 motorPositionsList[self.kinematics.articulationNames.index(m.name)] =motorPositions[m.name]
+                
+        else:
+            for m in self.kinematics.articulationNames:
+                motorPositions[m] = random.randint(-20, 20)
+                motorPositionsList[self.kinematics.articulationNames.index(m)] =motorPositions[m]
+                
         #~ print motorPositions
         self.kinematics.updateModel(array(motorPositionsList), 0., 0.)
+
         
         return motorPositions
         
