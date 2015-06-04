@@ -6,11 +6,13 @@ import Kinematics
 
 import random, time, copy
 
+from numpy import array
+
 #############
 # PARAMATERS
 #############
 
-HAS_REAL_ROBOT = True
+HAS_REAL_ROBOT = False
 
 ### Robot config ###
 HAS_IMU = False
@@ -102,9 +104,9 @@ class Walker:
         if self.robot is not None:
             for m in self.robot.motors:
                 motorPositions[m.name] = m.present_position
-                motorPositionsList[self.kinematics.motorsOrder[m.name]] =motorPositions[m.name]
+                motorPositionsList[self.kinematics.articulationNames.index(m.name)] =motorPositions[m.name]
         #~ print motorPositions
-        self.kinematics.updateModel(motorPositionsList)
+        self.kinematics.updateModel(array(motorPositionsList), 0., 0.)
         
         return motorPositions
         
