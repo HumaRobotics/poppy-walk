@@ -2,6 +2,7 @@ from numpy import *
 import time,sys
 
 
+
 class Kinematics:
 	"""
 		The purpose of this class is to compute the geometrical model of Poppy robot including Jacobian matrix.
@@ -444,6 +445,7 @@ class Kinematics:
 				self.points["l_toe"]["jacobian"][:,19] = cross_prod(dot(tll3,y),RS)
 
 
+
 	""" array((3,)) = self.getPosition(string pointName) 
 	This method returns the coordinates of a point with respect to the following orthonormal frame :
 	- Center is G point (stomach)
@@ -508,9 +510,38 @@ class Kinematics:
 	"""
 	def getSpeed(self, pointName):
 		if self.points.has_key(pointName) and self.old_points.has_key(pointName):
+			if self.points[pointName].has_key("speed"):
+				return self.points[pointName]["speed"] 
 			if self.points[pointName].has_key("position") and self.old_points[pointName].has_key("position"):
 				if self.t_update>self.t_old_update:
-					return (self.points[pointName]["position"]-self.old_points[pointName]["position"])/(self.t_update-self.t_old_update)
+					self.points[pointName]["speed"] =  (self.points[pointName]["position"]-self.old_points[pointName]["position"])/(self.t_update-self.t_old_update)
+					return self.points[pointName]["speed"]							
+				else:
+					return array([0.0,0.0,0.0])
+			else:
+				raise Exception,"No position computed"
+		else:
+			raise Exception,"No point named: " + pointName
+
+
+				
+	""" array((3,)) = self.getSpeed(string pointName) 
+	This method returns the speed of a point with respect to the following orthonormal frame :
+	- Center is G point (stomach)
+	- Z axis is vertical with respect to gravity directed upward
+	- X axis is linked to the pelvis solid and directed forward
+	- Y axis is defined so that XYZ frame is direct
+	The speed is computed by differenciation of the points positions
+	The list of the available points is :
+	sternum, r[l]_shoulder, r[l]_elbow, r[l]_hand, neck, nose, pelvis, r[l]_hip, r[l]_knee, r[l]_ankle, r[l]_toe
+	"""
+	def getAcceleration(self, pointName):
+		if self.points.has_key(pointName) and self.old_points.has_key(pointName):
+			if self.points[pointName].has_key("position") and self.old_points[pointName].has_key("position") :
+				if not self.points[pointName].has_key("speed"):
+					self.getSpeed(pointName)
+				if self.old_points[pointName].has_key("speed") and self.t_update>self.t_old_update:
+					return (self.points[pointName]["speed"]-self.old_points[pointName]["speed"])/(self.t_update-self.t_old_update)
 				else:
 					return array([0.0,0.0,0.0])
 			else:
@@ -530,6 +561,8 @@ def get_time():
 """
 definition of rotation matrix in 3D
 """
+
+
 def rot_mat(axe,s,c):
 	if axe == "x":
 		return array([[1,0,0],[0,c,-s],[0,s,c]])

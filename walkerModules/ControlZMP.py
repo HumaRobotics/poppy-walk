@@ -25,9 +25,12 @@ class ControlZMP(WalkerModule.WalkerModule):
         
         
     def controlZMP(self, motorPositions, motorNextPositions):
-        print self.kinematics.points.keys()
+        #~ print self.kinematics.points.keys()
         try:
-            speed = self.kinematics.getSpeed("pelvis")
+            position = self.kinematics.getPosition("pelvis")
+            acceleration = self.kinematics.getAcceleration("pelvis")
+            print position
+            print acceleration
         except:
             print "bla"
         #...
