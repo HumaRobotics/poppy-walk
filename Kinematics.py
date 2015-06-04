@@ -412,7 +412,6 @@ class Kinematics:
 				self.points["l_toe"]["jacobian"][:,17] = cross_prod(dot(tll1,y),PS)
 				self.points["l_toe"]["jacobian"][:,18] = cross_prod(dot(tll2,y),QS)
 				self.points["l_toe"]["jacobian"][:,19] = cross_prod(dot(tll3,y),RS)
-
         
     def getPosition(self, fromRef, toRef, point = array([0.,0.,0.])):
         #exemple razorPos = getPosition("pelvis", "r_foot", point = array([0.2,-0.3,0.])), with [0.2,-0.3,0.] position of razor in pelvis referential

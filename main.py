@@ -2,7 +2,7 @@
 
 import time
 
-HAS_REAL_ROBOT = False
+HAS_REAL_ROBOT = True
 
 #############
 # PARAMATERS
@@ -20,7 +20,6 @@ def createPoppyCreature():
     if FULL_POPPY_HUMANOID:
         from poppy_humanoid import PoppyHumanoid
         try:
-            from poppy_humanoid import PoppyHumanoid
             poppy = PoppyHumanoid()
         except Exception,e:
             print "could not create poppy object"
@@ -50,7 +49,7 @@ if HAS_REAL_ROBOT:
 
     for m in poppy.motors:
         m.compliant = False
-        m.goal_position = 0.0
+        m.goto_position(0.0, 1., wait=False)
       
     time.sleep(3)    
 else:
