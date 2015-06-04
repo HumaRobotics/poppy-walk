@@ -1,5 +1,5 @@
 from numpy import *
-
+import time,sys
 
 
 class Kinematics:
@@ -51,6 +51,13 @@ class Kinematics:
 
 		# dictionnary of points
 		self.points = {}
+		# dictionnary of points of the previous update
+		self.old_points = {}
+		# date of update
+		self.t_update = 0.0
+		# date of the previous update (in s)
+		self.t_old_update = 0.0
+		
 
 	def updateModel(self, q, theta, phi):
 		# q shape
@@ -79,7 +86,14 @@ class Kinematics:
 		# q[22] : r_hip_y
 		# q[23] : r_knee_y
 		# q[24] : r_ankle_y
-
+		
+		# for speed computation, store the old points and the date of computation
+		self.old_points = self.points.copy()
+		self.t_old_update = self.t_update
+		
+		# store the date of angle measure
+		self.t_update = get_time()
+		
 		#definition of axes
 		x=array([1,0,0])
 		y=array([0,1,0])
@@ -477,15 +491,45 @@ class Kinematics:
 			print axes[i_axe] + " is sensitive to:"
 			for i_art in range(len(self.articulationNames)):
 				if J[i_axe,i_art]>0:
-					print "+" + self.articulationNames[i_art]
+					print "(+)" + self.articulationNames[i_art]
 				elif J[i_axe,i_art]<0:
-					print "-" + self.articulationNames[i_art]
+					print "(-)" + self.articulationNames[i_art]
 
 				
+	""" array((3,)) = self.getSpeed(string pointName) 
+	This method returns the speed of a point with respect to the following orthonormal frame :
+	- Center is G point (stomach)
+	- Z axis is vertical with respect to gravity directed upward
+	- X axis is linked to the pelvis solid and directed forward
+	- Y axis is defined so that XYZ frame is direct
+	The speed is computed by differenciation of the points positions
+	The list of the available points is :
+	sternum, r[l]_shoulder, r[l]_elbow, r[l]_hand, neck, nose, pelvis, r[l]_hip, r[l]_knee, r[l]_ankle, r[l]_toe
+	"""
+	def getSpeed(self, pointName):
+		if self.points.has_key(pointName) and self.old_points.has_key(pointName):
+			if self.points[pointName].has_key("position") and self.old_points[pointName].has_key("position"):
+				if self.t_update>self.t_old_update:
+					return (self.points[pointName]["position"]-self.old_points[pointName]["position"])/(self.t_update-self.t_old_update)
+				else:
+					return array([0.0,0.0,0.0])
+			else:
+				raise Exception,"No position computed"
+		else:
+			raise Exception,"No point named: " + pointName
 
-	def getSpeed(self, fromRef, toRef, point = array([0.,0.,0.])):
-		raise NotImplementedError
-
+"""
+	time definition is different on Windows.
+"""
+def get_time():
+	if sys.platform.startswith('win'):
+		return time.clock()
+	else:
+		return time.time()
+			
+"""
+definition of rotation matrix in 3D
+"""
 def rot_mat(axe,s,c):
 	if axe == "x":
 		return array([[1,0,0],[0,c,-s],[0,s,c]])
@@ -496,14 +540,23 @@ def rot_mat(axe,s,c):
 	else:
 		return 0
 
+"""
+cross product using matrix multiplication which is faster
+"""
 def cross_prod(a,b):
 	ax = array([[0,-a[2],a[1]],[a[2],0,-a[0]],[-a[1],a[0],0]])
 	return dot(ax,b)
-	
-# validation of the geometric model at "zero" configuration
+
+"""	
+validation of the geometric model at "zero" configuration
+"""
 if __name__ == "__main__":
 	k = Kinematics()
+	t1 = get_time()
 	k.updateModel(zeros((25,)),0.0,0.0)
+	t2 = get_time()
+	print "Time of kinematics computation in ms:"
+	print (t2-t1)*1000
 	print "Positions of points with respect to stomach at zero position. "
 	print "Sternum position:"
 	print k.getPosition("sternum")
