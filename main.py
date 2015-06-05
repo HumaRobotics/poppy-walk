@@ -2,7 +2,7 @@
 
 import time
 
-HAS_REAL_ROBOT = False
+HAS_REAL_ROBOT = True
 
 #############
 # PARAMATERS
@@ -50,6 +50,7 @@ if HAS_REAL_ROBOT:
     for m in poppy.motors:
         m.compliant = False
         m.goto_position(0.0, 1., wait=False)
+        m.max_torque = 40
       
     time.sleep(3)    
 else:
@@ -62,7 +63,7 @@ walker = Walker.Walker(poppy)
 walker.init()
 walker.startWalk()
 
-for i in range(0, 4):
+for i in range(0, 2):
     walker.oneStep()
 
 walker.stopWalk()

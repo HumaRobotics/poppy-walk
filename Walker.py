@@ -12,28 +12,28 @@ from numpy import array
 # PARAMATERS
 #############
 
-HAS_REAL_ROBOT = False
+HAS_REAL_ROBOT = True
 
 ### Robot config ###
-HAS_IMU = False
-imu_model = "razor"
+#~ HAS_IMU = False
+#~ imu_model = "razor"
 
-HAS_FOOT_SENSORS = False
+#~ HAS_FOOT_SENSORS = False
 ###
 
 ### Activated modules ###
 
 
-HAS_FORWARD_KINEMATICS = False
-HAS_INVERSE_KINEMATICS = False
+#~ HAS_FORWARD_KINEMATICS = False
+#~ HAS_INVERSE_KINEMATICS = False
 
-USE_ZMP = False
-USE_PHASE_DIAGRAM = False
+#~ USE_ZMP = False
+#~ USE_PHASE_DIAGRAM = False
 
-up_foot_trajectory = "CPG" #CPG|play_move
+#~ up_foot_trajectory = "CPG" #CPG|play_move
 
-DO_TORSO_STABILIZATION = False
-torso_stabilization = "vertical"
+#~ DO_TORSO_STABILIZATION = False
+#~ torso_stabilization = "vertical"
 
 
 ###
@@ -42,7 +42,7 @@ torso_stabilization = "vertical"
 class Walker:
     def __init__(self, robot):
         self.robot = robot
-        self.dt = 0.05 #seconds
+        self.dt = 0.05#seconds
         
         self.kinematics = Kinematics.Kinematics()
         
@@ -59,8 +59,8 @@ class Walker:
             self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep.json")
             self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep.json")
         else:
-            self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep.json")
-            self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep.json")    
+            self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep2.json")
+            self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep2.json")    
         
         # control of torso
         if HAS_REAL_ROBOT :

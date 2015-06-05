@@ -1,522 +1,564 @@
 {
   "positions": [
     {
-      "l_hip_x": -2.15, 
+      "l_hip_x": 1.63, 
+      "l_hip_y": -0.45999999999999996, 
+      "l_hip_z": 0.57, 
+      "l_knee_y": 0.66, 
+      "l_ankle_y": -0.92
+    }, 
+    {
+      "l_hip_x": 1.98, 
       "l_hip_y": -0.55, 
-      "l_hip_z": 0.13, 
-      "l_knee_y": -0.4, 
-      "l_ankle_y": 0.04
+      "l_hip_z": 0.57, 
+      "l_knee_y": 0.92, 
+      "l_ankle_y": -1.1
     }, 
     {
-      "l_hip_x": -3.74, 
-      "l_hip_y": -0.6399999999999999, 
-      "l_hip_z": 0.31, 
-      "l_knee_y": -0.31, 
-      "l_ankle_y": 0.04
+      "l_hip_x": 4.79, 
+      "l_hip_y": -2.4, 
+      "l_hip_z": 0.48, 
+      "l_knee_y": 4.7, 
+      "l_ankle_y": -3.12
     }, 
     {
-      "l_hip_x": -6.81, 
-      "l_hip_y": -0.6399999999999999, 
-      "l_hip_z": 0.75, 
-      "l_knee_y": -0.04, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -9.19, 
-      "l_hip_y": -0.81, 
-      "l_hip_z": 1.19, 
-      "l_knee_y": 0.4, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -8.92, 
-      "l_hip_y": -1.52, 
-      "l_hip_z": 1.45, 
-      "l_knee_y": -0.22, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -9.27, 
-      "l_hip_y": -2.66, 
-      "l_hip_z": 0.75, 
-      "l_knee_y": -1.01, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -9.71, 
-      "l_hip_y": -3.27, 
-      "l_hip_z": -0.31, 
-      "l_knee_y": -0.04, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -9.89, 
+      "l_hip_x": 5.05, 
       "l_hip_y": -5.3, 
-      "l_hip_z": 3.12, 
-      "l_knee_y": -0.13, 
-      "l_ankle_y": 0.04
+      "l_hip_z": 0.4, 
+      "l_knee_y": 8.66, 
+      "l_ankle_y": -4.97
     }, 
     {
-      "l_hip_x": -9.98, 
-      "l_hip_y": -6.62, 
-      "l_hip_z": 9.19, 
-      "l_knee_y": 0.13, 
-      "l_ankle_y": 0.13
+      "l_hip_x": 4.88, 
+      "l_hip_y": -10.13, 
+      "l_hip_z": -0.84, 
+      "l_knee_y": 16.04, 
+      "l_ankle_y": -7.96
     }, 
     {
-      "l_hip_x": -10.33, 
-      "l_hip_y": -8.11, 
-      "l_hip_z": 19.03, 
-      "l_knee_y": 2.33, 
-      "l_ankle_y": 0.04
+      "l_hip_x": 5.05, 
+      "l_hip_y": -13.12, 
+      "l_hip_z": -2.42, 
+      "l_knee_y": 20.7, 
+      "l_ankle_y": -8.75
     }, 
     {
-      "l_hip_x": -10.33, 
-      "l_hip_y": -9.25, 
-      "l_hip_z": 17.89, 
-      "l_knee_y": 5.23, 
-      "l_ankle_y": 0.13
+      "l_hip_x": 4.88, 
+      "l_hip_y": -16.73, 
+      "l_hip_z": -4.62, 
+      "l_knee_y": 25.8, 
+      "l_ankle_y": -8.92
     }, 
     {
-      "l_hip_x": -9.54, 
-      "l_hip_y": -12.86, 
-      "l_hip_z": 16.57, 
-      "l_knee_y": 10.42, 
-      "l_ankle_y": 0.04
+      "l_hip_x": 5.14, 
+      "l_hip_y": -18.4, 
+      "l_hip_z": -5.85, 
+      "l_knee_y": 27.3, 
+      "l_ankle_y": -9.36
     }, 
     {
-      "l_hip_x": -9.01, 
-      "l_hip_y": -15.67, 
-      "l_hip_z": 15.34, 
-      "l_knee_y": 14.9, 
-      "l_ankle_y": 0.13
-    }, 
-    {
-      "l_hip_x": -8.57, 
-      "l_hip_y": -20.07, 
-      "l_hip_z": 14.73, 
-      "l_knee_y": 22.29, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -8.22, 
-      "l_hip_y": -23.85, 
-      "l_hip_z": 14.81, 
-      "l_knee_y": 26.42, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -6.9, 
-      "l_hip_y": -29.38, 
-      "l_hip_z": 14.81, 
-      "l_knee_y": 32.57, 
-      "l_ankle_y": 0.13
-    }, 
-    {
-      "l_hip_x": -6.02, 
-      "l_hip_y": -32.9, 
-      "l_hip_z": 14.73, 
-      "l_knee_y": 36.97, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -4.97, 
-      "l_hip_y": -38.62, 
-      "l_hip_z": 14.73, 
-      "l_knee_y": 43.03, 
-      "l_ankle_y": 0.13
-    }, 
-    {
-      "l_hip_x": -4.79, 
-      "l_hip_y": -43.36, 
-      "l_hip_z": 14.73, 
-      "l_knee_y": 46.9, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -5.23, 
-      "l_hip_y": -50.04, 
-      "l_hip_z": 14.73, 
-      "l_knee_y": 53.05, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -5.58, 
-      "l_hip_y": -54.44, 
-      "l_hip_z": 14.73, 
-      "l_knee_y": 57.45, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -6.2, 
-      "l_hip_y": -60.95, 
-      "l_hip_z": 14.55, 
-      "l_knee_y": 64.31, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -6.55, 
-      "l_hip_y": -65.25, 
-      "l_hip_z": 14.55, 
-      "l_knee_y": 68.79, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -7.16, 
-      "l_hip_y": -71.05, 
-      "l_hip_z": 14.64, 
-      "l_knee_y": 74.51, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -7.78, 
-      "l_hip_y": -74.31, 
-      "l_hip_z": 14.64, 
-      "l_knee_y": 78.02, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -8.31, 
-      "l_hip_y": -78.7, 
-      "l_hip_z": 14.64, 
-      "l_knee_y": 82.42, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -8.48, 
-      "l_hip_y": -81.34, 
-      "l_hip_z": 14.73, 
-      "l_knee_y": 85.05, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -8.48, 
-      "l_hip_y": -84.86, 
-      "l_hip_z": 14.99, 
-      "l_knee_y": 88.66, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -8.75, 
-      "l_hip_y": -86.79, 
-      "l_hip_z": 15.25, 
-      "l_knee_y": 90.68, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -9.36, 
-      "l_hip_y": -88.29, 
-      "l_hip_z": 15.52, 
-      "l_knee_y": 91.82, 
-      "l_ankle_y": 0.13
-    }, 
-    {
-      "l_hip_x": -9.71, 
-      "l_hip_y": -88.46, 
-      "l_hip_z": 15.6, 
-      "l_knee_y": 91.56, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -9.98, 
-      "l_hip_y": -88.2, 
-      "l_hip_z": 15.69, 
-      "l_knee_y": 90.51, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -10.15, 
-      "l_hip_y": -87.32, 
-      "l_hip_z": 15.69, 
-      "l_knee_y": 89.45, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -10.07, 
-      "l_hip_y": -84.77, 
-      "l_hip_z": 15.43, 
-      "l_knee_y": 87.34, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -9.89, 
-      "l_hip_y": -82.57, 
-      "l_hip_z": 15.25, 
-      "l_knee_y": 84.97, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -9.36, 
-      "l_hip_y": -78.97, 
-      "l_hip_z": 15.08, 
-      "l_knee_y": 80.48, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -9.01, 
-      "l_hip_y": -76.24, 
-      "l_hip_z": 15.08, 
-      "l_knee_y": 77.41, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -8.31, 
-      "l_hip_y": -72.11, 
-      "l_hip_z": 15.16, 
-      "l_knee_y": 73.19, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -7.78, 
-      "l_hip_y": -69.38, 
-      "l_hip_z": 15.34, 
-      "l_knee_y": 70.73, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -7.16, 
-      "l_hip_y": -65.43, 
-      "l_hip_z": 15.43, 
-      "l_knee_y": 67.38, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -7.08, 
-      "l_hip_y": -62.97, 
-      "l_hip_z": 15.34, 
-      "l_knee_y": 65.1, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -6.99, 
-      "l_hip_y": -59.54, 
-      "l_hip_z": 15.34, 
-      "l_knee_y": 61.76, 
-      "l_ankle_y": 0.13
-    }, 
-    {
-      "l_hip_x": -6.99, 
-      "l_hip_y": -57.25, 
-      "l_hip_z": 15.34, 
-      "l_knee_y": 59.65, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -6.81, 
-      "l_hip_y": -53.74, 
-      "l_hip_z": 15.08, 
-      "l_knee_y": 56.48, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -6.81, 
-      "l_hip_y": -51.36, 
-      "l_hip_z": 14.9, 
-      "l_knee_y": 54.55, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -6.55, 
-      "l_hip_y": -47.67, 
-      "l_hip_z": 14.64, 
-      "l_knee_y": 51.3, 
-      "l_ankle_y": 0.13
-    }, 
-    {
-      "l_hip_x": -6.46, 
-      "l_hip_y": -45.12, 
-      "l_hip_z": 14.55, 
-      "l_knee_y": 48.92, 
-      "l_ankle_y": 0.13
-    }, 
-    {
-      "l_hip_x": -6.2, 
-      "l_hip_y": -41.08, 
-      "l_hip_z": 14.37, 
-      "l_knee_y": 45.14, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -5.93, 
-      "l_hip_y": -38.35, 
-      "l_hip_z": 14.2, 
-      "l_knee_y": 42.77, 
-      "l_ankle_y": 0.13
-    }, 
-    {
-      "l_hip_x": -5.58, 
-      "l_hip_y": -34.31, 
-      "l_hip_z": 13.58, 
-      "l_knee_y": 39.43, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -5.32, 
-      "l_hip_y": -31.85, 
-      "l_hip_z": 13.05, 
-      "l_knee_y": 37.76, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -5.23, 
-      "l_hip_y": -28.42, 
-      "l_hip_z": 12.26, 
-      "l_knee_y": 34.77, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -5.32, 
-      "l_hip_y": -26.48, 
-      "l_hip_z": 11.82, 
-      "l_knee_y": 31.52, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -5.49, 
-      "l_hip_y": -22.7, 
-      "l_hip_z": 11.47, 
-      "l_knee_y": 26.07, 
-      "l_ankle_y": 0.04
-    }, 
-    {
-      "l_hip_x": -5.85, 
+      "l_hip_x": 5.41, 
       "l_hip_y": -19.98, 
-      "l_hip_z": 11.03, 
-      "l_knee_y": 22.46, 
-      "l_ankle_y": 0.04
+      "l_hip_z": -8.13, 
+      "l_knee_y": 28.09, 
+      "l_ankle_y": -10.33
     }, 
     {
-      "l_hip_x": -6.29, 
-      "l_hip_y": -15.85, 
-      "l_hip_z": 9.98, 
-      "l_knee_y": 17.71, 
-      "l_ankle_y": -0.04
+      "l_hip_x": 5.58, 
+      "l_hip_y": -20.42, 
+      "l_hip_z": -9.89, 
+      "l_knee_y": 28.18, 
+      "l_ankle_y": -11.03
     }, 
     {
-      "l_hip_x": -6.46, 
-      "l_hip_y": -12.95, 
-      "l_hip_z": 9.63, 
-      "l_knee_y": 14.37, 
-      "l_ankle_y": -0.31
+      "l_hip_x": 5.76, 
+      "l_hip_y": -21.03, 
+      "l_hip_z": -11.56, 
+      "l_knee_y": 28.53, 
+      "l_ankle_y": -12.26
     }, 
     {
-      "l_hip_x": -6.99, 
-      "l_hip_y": -8.73, 
-      "l_hip_z": 9.19, 
-      "l_knee_y": 9.01, 
-      "l_ankle_y": -0.48
+      "l_hip_x": 5.93, 
+      "l_hip_y": -21.74, 
+      "l_hip_z": -12.0, 
+      "l_knee_y": 29.23, 
+      "l_ankle_y": -13.05
     }, 
     {
-      "l_hip_x": -7.16, 
-      "l_hip_y": -6.62, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 5.85, 
+      "l_hip_x": 6.46, 
+      "l_hip_y": -23.32, 
+      "l_hip_z": -12.09, 
+      "l_knee_y": 31.25, 
+      "l_ankle_y": -13.67
+    }, 
+    {
+      "l_hip_x": 6.73, 
+      "l_hip_y": -24.73, 
+      "l_hip_z": -12.0, 
+      "l_knee_y": 33.27, 
+      "l_ankle_y": -13.93
+    }, 
+    {
+      "l_hip_x": 7.08, 
+      "l_hip_y": -27.19, 
+      "l_hip_z": -11.91, 
+      "l_knee_y": 36.62, 
+      "l_ankle_y": -14.99
+    }, 
+    {
+      "l_hip_x": 7.34, 
+      "l_hip_y": -28.68, 
+      "l_hip_z": -12.0, 
+      "l_knee_y": 38.73, 
+      "l_ankle_y": -16.22
+    }, 
+    {
+      "l_hip_x": 7.25, 
+      "l_hip_y": -30.53, 
+      "l_hip_z": -12.26, 
+      "l_knee_y": 41.89, 
+      "l_ankle_y": -17.98
+    }, 
+    {
+      "l_hip_x": 7.08, 
+      "l_hip_y": -31.58, 
+      "l_hip_z": -12.35, 
+      "l_knee_y": 44.18, 
+      "l_ankle_y": -19.12
+    }, 
+    {
+      "l_hip_x": 6.73, 
+      "l_hip_y": -32.81, 
+      "l_hip_z": -12.53, 
+      "l_knee_y": 47.34, 
+      "l_ankle_y": -20.88
+    }, 
+    {
+      "l_hip_x": 6.64, 
+      "l_hip_y": -33.43, 
+      "l_hip_z": -12.53, 
+      "l_knee_y": 49.19, 
+      "l_ankle_y": -21.93
+    }, 
+    {
+      "l_hip_x": 6.73, 
+      "l_hip_y": -34.13, 
+      "l_hip_z": -12.35, 
+      "l_knee_y": 51.56, 
+      "l_ankle_y": -23.16
+    }, 
+    {
+      "l_hip_x": 6.55, 
+      "l_hip_y": -34.57, 
+      "l_hip_z": -12.26, 
+      "l_knee_y": 53.05, 
+      "l_ankle_y": -24.13
+    }, 
+    {
+      "l_hip_x": 6.55, 
+      "l_hip_y": -35.45, 
+      "l_hip_z": -12.18, 
+      "l_knee_y": 54.99, 
+      "l_ankle_y": -25.19
+    }, 
+    {
+      "l_hip_x": 6.46, 
+      "l_hip_y": -36.07, 
+      "l_hip_z": -12.18, 
+      "l_knee_y": 55.96, 
+      "l_ankle_y": -25.45
+    }, 
+    {
+      "l_hip_x": 6.55, 
+      "l_hip_y": -36.51, 
+      "l_hip_z": -12.09, 
+      "l_knee_y": 56.31, 
+      "l_ankle_y": -25.54
+    }, 
+    {
+      "l_hip_x": 6.46, 
+      "l_hip_y": -36.51, 
+      "l_hip_z": -11.91, 
+      "l_knee_y": 56.31, 
+      "l_ankle_y": -25.54
+    }, 
+    {
+      "l_hip_x": 6.64, 
+      "l_hip_y": -36.51, 
+      "l_hip_z": -11.65, 
+      "l_knee_y": 56.31, 
+      "l_ankle_y": -25.36
+    }, 
+    {
+      "l_hip_x": 6.64, 
+      "l_hip_y": -36.51, 
+      "l_hip_z": -11.56, 
+      "l_knee_y": 56.31, 
+      "l_ankle_y": -25.19
+    }, 
+    {
+      "l_hip_x": 6.64, 
+      "l_hip_y": -36.33, 
+      "l_hip_z": -11.47, 
+      "l_knee_y": 56.22, 
+      "l_ankle_y": -24.57
+    }, 
+    {
+      "l_hip_x": 6.55, 
+      "l_hip_y": -36.33, 
+      "l_hip_z": -11.38, 
+      "l_knee_y": 55.87, 
+      "l_ankle_y": -23.96
+    }, 
+    {
+      "l_hip_x": 6.55, 
+      "l_hip_y": -36.24, 
+      "l_hip_z": -11.12, 
+      "l_knee_y": 54.64, 
+      "l_ankle_y": -22.64
+    }, 
+    {
+      "l_hip_x": 6.55, 
+      "l_hip_y": -36.15, 
+      "l_hip_z": -11.03, 
+      "l_knee_y": 53.23, 
+      "l_ankle_y": -21.76
+    }, 
+    {
+      "l_hip_x": 6.55, 
+      "l_hip_y": -35.63, 
+      "l_hip_z": -10.68, 
+      "l_knee_y": 50.59, 
+      "l_ankle_y": -20.09
+    }, 
+    {
+      "l_hip_x": 6.55, 
+      "l_hip_y": -35.1, 
+      "l_hip_z": -10.68, 
+      "l_knee_y": 48.4, 
+      "l_ankle_y": -18.77
+    }, 
+    {
+      "l_hip_x": 6.55, 
+      "l_hip_y": -33.25, 
+      "l_hip_z": -10.59, 
+      "l_knee_y": 44.62, 
+      "l_ankle_y": -17.1
+    }, 
+    {
+      "l_hip_x": 6.46, 
+      "l_hip_y": -31.67, 
+      "l_hip_z": -10.59, 
+      "l_knee_y": 42.07, 
+      "l_ankle_y": -16.22
+    }, 
+    {
+      "l_hip_x": 6.37, 
+      "l_hip_y": -28.95, 
+      "l_hip_z": -10.42, 
+      "l_knee_y": 38.73, 
+      "l_ankle_y": -14.99
+    }, 
+    {
+      "l_hip_x": 6.29, 
+      "l_hip_y": -27.45, 
+      "l_hip_z": -10.24, 
+      "l_knee_y": 36.97, 
+      "l_ankle_y": -14.29
+    }, 
+    {
+      "l_hip_x": 6.2, 
+      "l_hip_y": -26.31, 
+      "l_hip_z": -10.07, 
+      "l_knee_y": 35.3, 
+      "l_ankle_y": -13.32
+    }, 
+    {
+      "l_hip_x": 6.2, 
+      "l_hip_y": -24.99, 
+      "l_hip_z": -9.54, 
+      "l_knee_y": 33.1, 
+      "l_ankle_y": -11.82
+    }, 
+    {
+      "l_hip_x": 6.11, 
+      "l_hip_y": -24.11, 
+      "l_hip_z": -9.1, 
+      "l_knee_y": 31.6, 
+      "l_ankle_y": -10.77
+    }, 
+    {
+      "l_hip_x": 6.02, 
+      "l_hip_y": -22.88, 
+      "l_hip_z": -8.75, 
+      "l_knee_y": 29.58, 
+      "l_ankle_y": -8.92
+    }, 
+    {
+      "l_hip_x": 5.76, 
+      "l_hip_y": -21.3, 
+      "l_hip_z": -8.31, 
+      "l_knee_y": 27.65, 
+      "l_ankle_y": -7.52
+    }, 
+    {
+      "l_hip_x": 5.58, 
+      "l_hip_y": -20.33, 
+      "l_hip_z": -7.87, 
+      "l_knee_y": 26.15, 
+      "l_ankle_y": -6.64
+    }, 
+    {
+      "l_hip_x": 5.23, 
+      "l_hip_y": -18.92, 
+      "l_hip_z": -7.08, 
+      "l_knee_y": 23.87, 
+      "l_ankle_y": -5.93
+    }, 
+    {
+      "l_hip_x": 5.14, 
+      "l_hip_y": -18.04, 
+      "l_hip_z": -6.81, 
+      "l_knee_y": 22.29, 
+      "l_ankle_y": -6.02
+    }, 
+    {
+      "l_hip_x": 5.05, 
+      "l_hip_y": -16.55, 
+      "l_hip_z": -6.55, 
+      "l_knee_y": 19.91, 
+      "l_ankle_y": -6.02
+    }, 
+    {
+      "l_hip_x": 4.88, 
+      "l_hip_y": -15.58, 
+      "l_hip_z": -6.11, 
+      "l_knee_y": 18.51, 
+      "l_ankle_y": -6.02
+    }, 
+    {
+      "l_hip_x": 4.7, 
+      "l_hip_y": -14.26, 
+      "l_hip_z": -5.05, 
+      "l_knee_y": 16.31, 
+      "l_ankle_y": -5.93
+    }, 
+    {
+      "l_hip_x": 4.53, 
+      "l_hip_y": -13.47, 
+      "l_hip_z": -4.35, 
+      "l_knee_y": 14.81, 
+      "l_ankle_y": -5.49
+    }, 
+    {
+      "l_hip_x": 4.53, 
+      "l_hip_y": -12.68, 
+      "l_hip_z": -4.18, 
+      "l_knee_y": 12.88, 
+      "l_ankle_y": -4.44
+    }, 
+    {
+      "l_hip_x": 4.62, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -4.44, 
+      "l_knee_y": 12.09, 
+      "l_ankle_y": -3.91
+    }, 
+    {
+      "l_hip_x": 4.7, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -5.05, 
+      "l_knee_y": 11.12, 
+      "l_ankle_y": -3.03
+    }, 
+    {
+      "l_hip_x": 4.79, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -5.67, 
+      "l_knee_y": 10.24, 
+      "l_ankle_y": -2.42
+    }, 
+    {
+      "l_hip_x": 4.97, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -6.73, 
+      "l_knee_y": 8.22, 
+      "l_ankle_y": -0.84
+    }, 
+    {
+      "l_hip_x": 4.97, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -7.34, 
+      "l_knee_y": 6.9, 
+      "l_ankle_y": 0.31
+    }, 
+    {
+      "l_hip_x": 4.97, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -8.04, 
+      "l_knee_y": 5.67, 
+      "l_ankle_y": 1.63
+    }, 
+    {
+      "l_hip_x": 4.97, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -8.22, 
+      "l_knee_y": 5.67, 
+      "l_ankle_y": 1.89
+    }, 
+    {
+      "l_hip_x": 4.79, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -8.13, 
+      "l_knee_y": 6.11, 
+      "l_ankle_y": 1.71
+    }, 
+    {
+      "l_hip_x": 4.79, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -7.96, 
+      "l_knee_y": 6.46, 
+      "l_ankle_y": 1.63
+    }, 
+    {
+      "l_hip_x": 4.79, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -7.87, 
+      "l_knee_y": 6.55, 
+      "l_ankle_y": 1.45
+    }, 
+    {
+      "l_hip_x": 4.79, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -8.04, 
+      "l_knee_y": 6.55, 
+      "l_ankle_y": 1.36
+    }, 
+    {
+      "l_hip_x": 4.7, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -8.31, 
+      "l_knee_y": 6.64, 
+      "l_ankle_y": 0.92
+    }, 
+    {
+      "l_hip_x": 4.88, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -8.48, 
+      "l_knee_y": 6.73, 
+      "l_ankle_y": 0.57
+    }, 
+    {
+      "l_hip_x": 4.88, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -8.57, 
+      "l_knee_y": 6.99, 
+      "l_ankle_y": 0.13
+    }, 
+    {
+      "l_hip_x": 4.88, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -8.57, 
+      "l_knee_y": 7.25, 
+      "l_ankle_y": -0.13
+    }, 
+    {
+      "l_hip_x": 4.88, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 7.69, 
       "l_ankle_y": -0.57
     }, 
     {
-      "l_hip_x": -7.25, 
-      "l_hip_y": -4.859999999999999, 
-      "l_hip_z": 8.92, 
-      "l_knee_y": 2.42, 
-      "l_ankle_y": -0.57
+      "l_hip_x": 4.88, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 8.13, 
+      "l_ankle_y": -0.75
     }, 
     {
-      "l_hip_x": -7.6, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 2.24, 
-      "l_ankle_y": -0.48
+      "l_hip_x": 4.79, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 8.84, 
+      "l_ankle_y": -1.19
     }, 
     {
-      "l_hip_x": -7.78, 
-      "l_hip_y": -4.59, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 2.86, 
-      "l_ankle_y": -0.57
+      "l_hip_x": 4.7, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -8.75, 
+      "l_knee_y": 9.36, 
+      "l_ankle_y": -1.27
     }, 
     {
-      "l_hip_x": -7.78, 
-      "l_hip_y": -4.42, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 3.03, 
-      "l_ankle_y": -0.57
+      "l_hip_x": 4.7, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.71, 
+      "l_ankle_y": -1.36
     }, 
     {
-      "l_hip_x": -7.78, 
-      "l_hip_y": -4.42, 
-      "l_hip_z": 9.1, 
-      "l_knee_y": 2.95, 
-      "l_ankle_y": -0.48
+      "l_hip_x": 4.7, 
+      "l_hip_y": -12.59, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.71, 
+      "l_ankle_y": -1.27
     }, 
     {
-      "l_hip_x": -7.78, 
-      "l_hip_y": -4.42, 
-      "l_hip_z": 9.27, 
-      "l_knee_y": 2.86, 
-      "l_ankle_y": -0.57
+      "l_hip_x": 4.7, 
+      "l_hip_y": -12.59, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.71, 
+      "l_ankle_y": -1.27
     }, 
     {
-      "l_hip_x": -7.78, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.36, 
-      "l_knee_y": 2.86, 
-      "l_ankle_y": -0.48
+      "l_hip_x": 4.7, 
+      "l_hip_y": -12.59, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.71, 
+      "l_ankle_y": -1.19
     }, 
     {
-      "l_hip_x": -7.69, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.36, 
-      "l_knee_y": 2.77, 
-      "l_ankle_y": -0.57
+      "l_hip_x": 4.62, 
+      "l_hip_y": -12.59, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.54, 
+      "l_ankle_y": -1.19
     }, 
     {
-      "l_hip_x": -7.87, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.36, 
-      "l_knee_y": 2.86, 
-      "l_ankle_y": -0.57
+      "l_hip_x": 4.62, 
+      "l_hip_y": -12.59, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.45, 
+      "l_ankle_y": -1.27
     }, 
     {
-      "l_hip_x": -8.22, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 2.86, 
-      "l_ankle_y": -0.57
+      "l_hip_x": 4.7, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.36, 
+      "l_ankle_y": -1.36
     }, 
     {
-      "l_hip_x": -8.22, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 2.86, 
-      "l_ankle_y": -0.48
+      "l_hip_x": 4.7, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.27, 
+      "l_ankle_y": -1.36
     }, 
     {
-      "l_hip_x": -8.22, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 2.95, 
-      "l_ankle_y": -0.57
+      "l_hip_x": 4.79, 
+      "l_hip_y": -12.42, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.27, 
+      "l_ankle_y": -1.36
     }, 
     {
-      "l_hip_x": -8.22, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 2.86, 
-      "l_ankle_y": -0.57
-    }, 
-    {
-      "l_hip_x": -8.22, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 2.77, 
-      "l_ankle_y": -0.57
-    }, 
-    {
-      "l_hip_x": -8.22, 
-      "l_hip_y": -4.68, 
-      "l_hip_z": 9.01, 
-      "l_knee_y": 2.86, 
-      "l_ankle_y": -0.48
+      "l_hip_x": 4.79, 
+      "l_hip_y": -12.51, 
+      "l_hip_z": -8.66, 
+      "l_knee_y": 9.36, 
+      "l_ankle_y": -1.36
     }
   ], 
   "framerate": 20.0
