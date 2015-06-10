@@ -536,8 +536,8 @@ class Kinematics:
 	sternum, r[l]_shoulder, r[l]_elbow, r[l]_hand, neck, nose, pelvis, r[l]_hip, r[l]_knee, r[l]_ankle, r[l]_toe
 	"""
 	def getAcceleration(self, pointName):
-		if self.points.has_key(pointName) and self.old_points.has_key(pointName):
-			if self.points[pointName].has_key("position") and self.old_points[pointName].has_key("position") :
+		if self.points.has_key(pointName):
+			if self.old_points.has_key(pointName) and self.points[pointName].has_key("position") and self.old_points[pointName].has_key("position") :
 				if not self.points[pointName].has_key("speed"):
 					self.getSpeed(pointName)
 				if self.old_points[pointName].has_key("speed") and self.t_update>self.t_old_update:
@@ -547,7 +547,7 @@ class Kinematics:
 			else:
 				raise Exception,"No position computed"
 		else:
-			raise Exception,"No point named: " + pointName
+			raise Exception,"No point named: " + pointName 
 
 """
 	time definition is different on Windows.

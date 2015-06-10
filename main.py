@@ -50,7 +50,7 @@ if HAS_REAL_ROBOT:
     for m in poppy.motors:
         m.compliant = False
         m.goto_position(0.0, 1., wait=False)
-        m.max_torque = 40
+        m.max_torque = 80
       
     time.sleep(3)    
 else:

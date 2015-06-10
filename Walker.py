@@ -55,16 +55,16 @@ class Walker:
         self.leftDoubleSupportModules = {}
         
         # foot movement when not on the ground
-        if HAS_REAL_ROBOT :
-            self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep.json")
-            self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep.json")
-        else:
-            self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep2.json")
-            self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep2.json")    
+        #~ if HAS_REAL_ROBOT :
+            #~ self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep.json")
+            #~ self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep.json")
+        #~ else:
+        self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep2.json")
+        self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep2.json")    
         
         # control of torso
-        if HAS_REAL_ROBOT :
-            self.walkModules["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
+        #~ if HAS_REAL_ROBOT :
+            #~ self.walkModules["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
 
         self.walkModules["keep bust_x"] = AngularControl("constant", "bust_x")
         self.walkModules["keep bust_y"] = AngularControl("constant", "bust_y")                   
@@ -121,7 +121,7 @@ class Walker:
                 #~ if m.name == "l_knee_y":
                     
                 speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
-                print m.name, speed
+                #~ print m.name, speed
                 if speed > 20:
                     speed = 20
                 if speed < -20:
