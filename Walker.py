@@ -114,7 +114,19 @@ class Walker:
         if self.robot is not None:
             for m in self.robot.motors:
                 m.goto_position(positions[m.name], self.dt, wait=False)
-        
+ 
+    def setMotorSpeeds(self, positions, positionsBefore):
+        if self.robot is not None:
+            for m in self.robot.motors:
+                #~ if m.name == "l_knee_y":
+                    
+                speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
+                print m.name, speed
+                if speed > 20:
+                    speed = 20
+                if speed < -20:
+                    speed = -20
+                m.goal_speed = speed        
     ###
         
     def stepRight(self):
@@ -135,7 +147,8 @@ class Walker:
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
                 
             #Apply modified values
-            self.setMotorPositions(motorNextPositions)
+            #~ self.setMotorPositions(motorNextPositions)
+            self.setMotorSpeeds(motorNextPositions, motorPositions)
             
             #TODO : improve to wait real time
             time.sleep(self.dt)
@@ -158,7 +171,8 @@ class Walker:
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
                 
             #Apply modified values
-            self.setMotorPositions(motorNextPositions)
+            #~ self.setMotorPositions(motorNextPositions)
+            self.setMotorSpeeds(motorNextPositions, motorPositions)
             
             #TODO : improve to wait real time
             time.sleep(self.dt)
@@ -180,7 +194,8 @@ class Walker:
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
                 #~ print motorNextPositions                
             #Apply modified values
-            self.setMotorPositions(motorNextPositions)
+            #~ self.setMotorPositions(motorNextPositions)
+            self.setMotorSpeeds(motorNextPositions, motorPositions)
             
             #TODO : improve to wait real time
             time.sleep(self.dt)
@@ -202,7 +217,8 @@ class Walker:
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
                 
             #Apply modified values
-            self.setMotorPositions(motorNextPositions)
+            #~ self.setMotorPositions(motorNextPositions)
+            self.setMotorSpeeds(motorNextPositions, motorPositions)
             
             #TODO : improve to wait real time
             time.sleep(self.dt)        
