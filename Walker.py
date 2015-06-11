@@ -12,28 +12,28 @@ from numpy import array
 # PARAMATERS
 #############
 
-HAS_REAL_ROBOT = False
+HAS_REAL_ROBOT = True
 
 ### Robot config ###
-HAS_IMU = False
-imu_model = "razor"
+#~ HAS_IMU = False
+#~ imu_model = "razor"
 
-HAS_FOOT_SENSORS = False
+#~ HAS_FOOT_SENSORS = False
 ###
 
 ### Activated modules ###
 
 
-HAS_FORWARD_KINEMATICS = False
-HAS_INVERSE_KINEMATICS = False
+#~ HAS_FORWARD_KINEMATICS = False
+#~ HAS_INVERSE_KINEMATICS = False
 
-USE_ZMP = False
-USE_PHASE_DIAGRAM = False
+#~ USE_ZMP = False
+#~ USE_PHASE_DIAGRAM = False
 
-up_foot_trajectory = "CPG" #CPG|play_move
+#~ up_foot_trajectory = "CPG" #CPG|play_move
 
-DO_TORSO_STABILIZATION = False
-torso_stabilization = "vertical"
+#~ DO_TORSO_STABILIZATION = False
+#~ torso_stabilization = "vertical"
 
 
 ###
@@ -42,7 +42,7 @@ torso_stabilization = "vertical"
 class Walker:
     def __init__(self, robot):
         self.robot = robot
-        self.dt = 0.05 #seconds
+        self.dt = 0.05#seconds
         
         self.kinematics = Kinematics.Kinematics()
         
@@ -59,8 +59,8 @@ class Walker:
             self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep.json")
             self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep.json")
         else:
-            self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep.json")
-            self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep.json")    
+            self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep2.json")
+            self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep2.json")    
         
         # control of torso
         if HAS_REAL_ROBOT :
@@ -121,7 +121,19 @@ class Walker:
         if self.robot is not None:
             for m in self.robot.motors:
                 m.goto_position(positions[m.name], self.dt, wait=False)
-        
+ 
+    def setMotorSpeeds(self, positions, positionsBefore):
+        if self.robot is not None:
+            for m in self.robot.motors:
+                #~ if m.name == "l_knee_y":
+                    
+                speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
+                print m.name, speed
+                if speed > 20:
+                    speed = 20
+                if speed < -20:
+                    speed = -20
+                m.goal_speed = speed        
     ###
         
     def stepRight(self):
@@ -142,7 +154,8 @@ class Walker:
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
                 
             #Apply modified values
-            self.setMotorPositions(motorNextPositions)
+            #~ self.setMotorPositions(motorNextPositions)
+            self.setMotorSpeeds(motorNextPositions, motorPositions)
             
             #TODO : improve to wait real time
             time.sleep(self.dt)
@@ -165,7 +178,8 @@ class Walker:
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
                 
             #Apply modified values
-            self.setMotorPositions(motorNextPositions)
+            #~ self.setMotorPositions(motorNextPositions)
+            self.setMotorSpeeds(motorNextPositions, motorPositions)
             
             #TODO : improve to wait real time
             time.sleep(self.dt)
@@ -187,7 +201,8 @@ class Walker:
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
                 #~ print motorNextPositions                
             #Apply modified values
-            self.setMotorPositions(motorNextPositions)
+            #~ self.setMotorPositions(motorNextPositions)
+            self.setMotorSpeeds(motorNextPositions, motorPositions)
             
             #TODO : improve to wait real time
             time.sleep(self.dt)
@@ -209,7 +224,8 @@ class Walker:
                 motorNextPositions = m.execute(motorPositions, motorNextPositions)
                 
             #Apply modified values
-            self.setMotorPositions(motorNextPositions)
+            #~ self.setMotorPositions(motorNextPositions)
+            self.setMotorSpeeds(motorNextPositions, motorPositions)
             
             #TODO : improve to wait real time
             time.sleep(self.dt)        

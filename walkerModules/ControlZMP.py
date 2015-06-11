@@ -29,8 +29,9 @@ class ControlZMP(WalkerModule.WalkerModule):
         try:
             position = self.kinematics.getPosition(referencePosition)
             acceleration = self.kinematics.getAcceleration("pelvis")
-            print position
-            print acceleration
+            #~ print position
+            #~ print acceleration
+
             
             g = 9.81
             
@@ -43,7 +44,7 @@ class ControlZMP(WalkerModule.WalkerModule):
         #...
         #~ print "controlling ZMP"
         return motorNextPositions
-        
+       
     def canLiftLeftFoot(self):
         
         #MOCK
