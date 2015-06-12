@@ -42,7 +42,7 @@ class MOCKPlayJsonModule(WalkerModule):
     def footLanded(self):
         
         #MOCK
-        r = random.randint(0, 10)
+        r = random.randint(0, 500)
         if r == 0:
             print "foot landed"
             return True

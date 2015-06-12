@@ -8,12 +8,12 @@ class ControlZMP(WalkerModule.WalkerModule):
         self.ZMPpos = []
     
     def stepRightExecute(self, motorPositions, motorNextPositions):
-        ZMPpos = [] #position under right foot
-        return self.controlZMP( motorPositions, motorNextPositions, "r_toe")
-        
-    def stepLeftExecute(self, motorPositions, motorNextPositions):
         ZMPpos = [] #position under left foot
         return self.controlZMP( motorPositions, motorNextPositions, "l_toe")
+        
+    def stepLeftExecute(self, motorPositions, motorNextPositions):
+        ZMPpos = [] #position under right foot
+        return self.controlZMP( motorPositions, motorNextPositions, "r_toe")
         
     def doubleSupportRightExecute(self, motorPositions, motorNextPositions):
         ZMPpos = [] #between feet
@@ -35,7 +35,7 @@ class ControlZMP(WalkerModule.WalkerModule):
             jacobian = self.kinematics.points[referencePosition]["jacobian"]
             #~ print jacobian
             acceleration = self.kinematics.getAcceleration("pelvis")
-            #~ print position
+            print position
             #~ print acceleration
             
         except Exception,e: 
@@ -48,39 +48,69 @@ class ControlZMP(WalkerModule.WalkerModule):
         yZMP = -position[1] - acceleration[1]*9.81/(-position[2])
         print "pos ZMP ",[xZMP, yZMP]
         
-        goalZMP = [ 0., 0.]
+        goalZMP = [-position[0] , -position[1] ]
+        goalZ = 0.40
         
-        coef = 0.1
-        correctionX = self.kinematics.xtoe - acceleration[0]*9.81/(-position[2]) - goalZMP[0]
-        correctionY =  - acceleration[1]*9.81/(-position[2]) - goalZMP[1]
+        coef = 1.
+        correctionX = xZMP  - goalZMP[0]
+        correctionY =  yZMP - goalZMP[1]
+        correctionZ =  -position[2] - goalZ
         
-        if correctionX + correctionY== 0.:
+        if correctionX + correctionY + correctionZ== 0.:
             print "avoid dividing by zero in ZMP"
             return motorNextPositions
             
-        coefX = coef*correctionX/(correctionX + correctionY)
-        coefY = coef*correctionY/(correctionX + correctionY)
+        coefX = coef*correctionX/(correctionX + correctionY + correctionZ)
+        coefY = coef*correctionY/(correctionX + correctionY+ correctionZ)
+        coefZ= coef*correctionZ/(correctionX + correctionY+ correctionZ)
         
         #~ sumJacobianX = sum(jacobian[0])
         #~ sumJacobianY = sum(jacobian[1])
         
         anglesX = {}
         numX = 0
-        
-        minK = 0.01
+        anglesY = {}
+        numY = 0        
+        anglesZ = {}
+        numZ = 0       
+        minK = 0.1
         
         for m in self.kinematics.articulationNames:
             ki = jacobian[0][self.kinematics.articulationNames.index(m)]
             #~ print ki
             if abs(ki) > minK:
                 numX +=1
-                anglesX[m] = 1/ki
+                anglesX[m] = -1/ki
                 
-        for m in anglesX.keys():
-            anglesX[m] = anglesX[m] /numX
-            print "d", m, " ",anglesX[m] *coefX
-            motorNextPositions[m] += anglesX[m] *coefX
-            
+            ki = jacobian[1][self.kinematics.articulationNames.index(m)]
+            #~ print ki
+            if abs(ki) > minK:
+                numY +=1
+                anglesY[m] = -1/ki
+                
+            ki = jacobian[2][self.kinematics.articulationNames.index(m)]
+            #~ print ki
+            if abs(ki) > minK:
+                numZ +=1
+                anglesZ[m] = -1/ki
+                
+        #~ print "mod for X"
+        #~ for m in anglesX.keys():
+            #~ anglesX[m] = anglesX[m] /numX
+            #~ print "d", m, " ",anglesX[m] *coefX
+            #~ motorNextPositions[m] += anglesX[m] *coefX
+
+        #~ print "mod for Y"
+        #~ for m in anglesY.keys():
+            #~ anglesY[m] = anglesY[m] /numY
+            #~ print "d", m, " ",anglesY[m] *coefY
+            #~ motorNextPositions[m] += anglesY[m] *coefY
+
+        print "mod for Z"
+        for m in anglesZ.keys():
+            anglesZ[m] = anglesZ[m] /numZ
+            print "d", m, " ",anglesZ[m] *coefZ
+            motorNextPositions[m] += anglesZ[m] *coefZ            
     
         #...
         #~ print "controlling ZMP"
@@ -89,7 +119,7 @@ class ControlZMP(WalkerModule.WalkerModule):
     def canLiftLeftFoot(self):
         
         #MOCK
-        r = random.randint(0, 50)
+        r = random.randint(0, 10)
         if r == 0:
             print "can lift left foot"
             return True
@@ -101,7 +131,7 @@ class ControlZMP(WalkerModule.WalkerModule):
     def canLiftRightFoot(self):
         
         #MOCK
-        r = random.randint(0, 50)
+        r = random.randint(0, 10)
         if r == 0:
             print "can lift right foot"
             return True

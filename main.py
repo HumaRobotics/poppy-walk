@@ -49,10 +49,14 @@ if HAS_REAL_ROBOT:
 
     for m in poppy.motors:
         m.compliant = False
-        m.goto_position(0.0, 1., wait=False)
         m.max_torque = 80
+        
+    time.sleep(0.5)   
+        
+    for m in poppy.motors:
+        m.goto_position(0.0, 1., wait=False)
       
-    time.sleep(3)    
+    time.sleep(5)    
 else:
     poppy = None
 
@@ -63,7 +67,10 @@ walker = Walker.Walker(poppy)
 walker.init()
 walker.startWalk()
 
-for i in range(0, 4):
+for m in poppy.l_leg:
+    m.compliant = True
+
+for i in range(0, 1):
     walker.oneStep()
 
 walker.stopWalk()
