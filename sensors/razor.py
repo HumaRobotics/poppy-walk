@@ -21,7 +21,7 @@ class Razor(T.Thread):
         try:
           #test the port
           a = S.Serial(com, 57600,timeout = 0.1)
-          time.sleep(2)
+          time.sleep(3)
           # do not forget to strip the zeros values
           t = a.readline().strip('\x00')
           a.close()

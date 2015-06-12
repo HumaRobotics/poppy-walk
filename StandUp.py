@@ -1,13 +1,14 @@
 # this script is there to verify the Poppy system for walking
 
-import sensors
+from sensors.razor import Razor
+import sensors.footContact
 import pypot.robot
 import time,sys
 
 # first plug the razor !
 all_connected = True
 try:
-  razor = sensors.razor.Razor()
+  razor = Razor()
 except:
   all_connected = False
   raise
@@ -26,6 +27,17 @@ if all_connected == True:
     foot.stop()
     raise
     all_connected = False
+    
+#~ if all_connected == True:
+  #~ try:
+    #~ from poppy_humanoid import PoppyHumanoid
+    #~ poppy = PoppyHumanoid()
+  #~ except:
+    #~ razor.stop()
+    #~ foot.stop()
+    #~ raise
+    #~ all_connected = False
+    
 if all_connected == True:
   foot.start()
   razor.start()
@@ -40,10 +52,10 @@ if all_connected == True:
     
   time.sleep(5)
   
-  print foot.rightFront
-  print foot.rightBack
-  print foot.leftFront
-  print foot.leftBack
+  #~ print foot.rightFront
+  #~ print foot.rightBack
+  #~ print foot.leftFront
+  #~ print foot.leftBack
   print razor.eul
   
   for m in poppy.motors:
