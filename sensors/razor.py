@@ -15,6 +15,7 @@ class Razor(T.Thread):
     if port == "auto":
       # get the list of ports
       listcom = D.get_available_ports()
+      print listcom
       razorcom = []
       for com in listcom:
         try:
@@ -135,3 +136,18 @@ class Razor(T.Thread):
     time.sleep(1)
     self.s.close()
     print "razor sensor disconnected."
+    
+    
+if __name__ == "__main__":
+    
+    import time
+
+    rz = Razor()
+    rz.start()
+    
+    time.sleep(2)
+    
+    print rz.eul
+    rz.stop()
+    
+    
