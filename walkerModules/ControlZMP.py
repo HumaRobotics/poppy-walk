@@ -37,6 +37,7 @@ class ControlZMP(WalkerModule.WalkerModule):
             acceleration = self.kinematics.getAcceleration("pelvis")
             print position
             #~ print acceleration
+
             
         except Exception,e: 
             print str(e)
