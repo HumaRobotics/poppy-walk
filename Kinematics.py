@@ -15,7 +15,7 @@ class Kinematics:
         calcLarm : True to compute the kinematics of the left arm
         refFrame : which Frame is used to compute Jacobians and positions : "Pelvis", "RFoot", "LFoot" are available
     """
-    def __init__(self, calcJacobian=True, calcRleg=True, calcLleg=True, calcHead=True, calcRarm=True, calcLarm=True, calcBust=True, refFrame="LFoot"):
+    def __init__(self, calcJacobian=True, calcRleg=True, calcLleg=True, calcHead=True, calcRarm=True, calcLarm=True, calcBust=True, refFrame="Pelvis"):
         # geometric data
         # shoulder position on y
         self.ysh = 0.106
