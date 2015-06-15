@@ -18,11 +18,11 @@ class CPGModule(WalkerModule.WalkerModule):
         
     def execute(self, motorPositions, motorNextPositions, phase=""):
         
-        
+        #~ print self.currentTime
         if self.finished:
             #~ print "CPG finished"
             self.finished = False
-            return motorNextPositions
+            #~ return motorNextPositions
 
         if self.motorName not in motorNextPositions.keys():
             raise Exception,"No motor named: " +self.motorName
@@ -37,10 +37,14 @@ class CPGModule(WalkerModule.WalkerModule):
             #~ motorNextPositions[m] = nextPositions[m]
         
         self.currentTime += self.dt
+        if self.currentTime >= self.finishedTime:
+            print self.motorName," foot landed ",self.currentTime
+            self.finished = True
+            #~ print self.motorName, " ","finished"
         if self.currentTime >= self.cycleTime:
             self.currentTime -= self.cycleTime
-        if self.currentTime >= self.finishedTime:
-            self.finished = True
+            #~ print self.motorName, " ","time reset"
+
         return motorNextPositions
         
     def reset(self):
@@ -52,11 +56,17 @@ class CPGModule(WalkerModule.WalkerModule):
         
     def footLanded(self):
         if self.finished:
+            print self.motorName," foot landed ",self.currentTime
             #~ self.finished = False
             return True
         return False
         
-        #~ #MOCK
+    def canLiftLeftFoot(self):
+        return self.finished
+        
+    def canLiftRightFoot(self):
+        return self.finished
+              #~ #MOCK
         #~ r = random.randint(0, 10)
         #~ if r == 0:
             #~ print "foot landed"
