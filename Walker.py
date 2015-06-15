@@ -1,7 +1,8 @@
 
 from walkerModules.WalkerModule import *
 from walkerModules.PlayJsonModule import PlayJsonModule
-from walkerModules.ControlZMP import ControlZMP
+from walkerModules.ControlZMP import ControlZMP, MOCKControlZMP
+from walkerModules.CPGModule import CPGModule
 import Kinematics
 
 import random, time, copy
@@ -12,7 +13,7 @@ from numpy import array
 # PARAMATERS
 #############
 
-HAS_REAL_ROBOT = True
+HAS_REAL_ROBOT = False
 
 ### Robot config ###
 #~ HAS_IMU = False
@@ -59,31 +60,36 @@ class Walker:
             #~ self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep.json")
             #~ self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep.json")
         #~ else:
-        self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep2.json")
-        self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep2.json")    
-        
+        #~ self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep2.json")
+        #~ self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep2.json")    
+        CPGcycleTime = 4.
+        self.rightStepModules["swingFoot"] = CPGModule("r_ankle_y", self.dt, cycleTime = CPGcycleTime, amplitude = 30)
+        self.leftStepModules["swingFoot"] = CPGModule("r_ankle_y", self.dt, cycleTime = CPGcycleTime, amplitude = 30)
         # control of torso
         #~ if HAS_REAL_ROBOT :
             #~ self.walkModules["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
 
-        self.walkModules["keep bust_x"] = AngularControl("constant", "bust_x")
-        self.walkModules["keep bust_y"] = AngularControl("constant", "bust_y")                   
-        self.walkModules["keep abs_z"] = AngularControl("constant", "abs_z")
-        self.walkModules["keep abs_y"] = AngularControl("constant", "abs_y") 
+        #~ self.walkModules["keep bust_x"] = AngularControl("constant", "bust_x")
+        #~ self.walkModules["keep bust_y"] = AngularControl("constant", "bust_y")                   
+        #~ self.walkModules["keep abs_z"] = AngularControl("constant", "abs_z")
+        #~ self.walkModules["keep abs_y"] = AngularControl("constant", "abs_y") 
         
-        self.leftStepModules["keep r_hip_z"] = AngularControl("constant", "r_hip_z") 
-        self.leftStepModules["keep r_hip_y"] = AngularControl("constant", "r_hip_y") 
-        self.leftStepModules["keep r_hip_x"] = AngularControl("constant", "r_hip_x") 
-        self.leftStepModules["keep r_knee_y"] = AngularControl("constant", "r_knee_y") 
-        self.leftStepModules["keep r_ankle_y"] = AngularControl("constant", "r_ankle_y") 
+        #~ self.leftStepModules["keep r_hip_z"] = AngularControl("constant", "r_hip_z") 
+        #~ self.leftStepModules["keep r_hip_y"] = AngularControl("constant", "r_hip_y") 
+        #~ self.leftStepModules["keep r_hip_x"] = AngularControl("constant", "r_hip_x") 
+        #~ self.leftStepModules["keep r_knee_y"] = AngularControl("constant", "r_knee_y") 
+        #~ self.leftStepModules["keep r_ankle_y"] = AngularControl("constant", "r_ankle_y") 
         
-        self.rightStepModules["keep l_hip_z"] = AngularControl("constant", "l_hip_z") 
-        self.rightStepModules["keep l_hip_y"] = AngularControl("constant", "l_hip_y") 
-        self.rightStepModules["keep l_hip_x"] = AngularControl("constant", "l_hip_x") 
-        self.rightStepModules["keep l_knee_y"] = AngularControl("constant", "l_knee_y") 
-        self.rightStepModules["keep l_ankle_y"] = AngularControl("constant", "l_ankle_y") 
+        #~ self.rightStepModules["keep l_hip_z"] = AngularControl("constant", "l_hip_z") 
+        #~ self.rightStepModules["keep l_hip_y"] = AngularControl("constant", "l_hip_y") 
+        #~ self.rightStepModules["keep l_hip_x"] = AngularControl("constant", "l_hip_x") 
+        #~ self.rightStepModules["keep l_knee_y"] = AngularControl("constant", "l_knee_y") 
+        #~ self.rightStepModules["keep l_ankle_y"] = AngularControl("constant", "l_ankle_y") 
+        
+        
+        
         # balancing module
-        self.walkModules["balancing"] = ControlZMP(self.kinematics)
+        self.walkModules["balancing"] = MOCKControlZMP(self.kinematics)
     ###
         
     def oneStep(self):

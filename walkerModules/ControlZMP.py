@@ -1,6 +1,8 @@
 import WalkerModule
 import random
 
+
+
 class ControlZMP(WalkerModule.WalkerModule):
     def __init__(self, kinematics):
         WalkerModule.WalkerModule.__init__(self)
@@ -140,3 +142,29 @@ class ControlZMP(WalkerModule.WalkerModule):
         #~ print "can't lift right foot"
         return False       
  
+class MOCKControlZMP(WalkerModule.WalkerModule):
+    def __init__(self, kinematics):
+        pass
+        
+    def canLiftLeftFoot(self):
+        
+        #MOCK
+        r = random.randint(0, 10)
+        if r == 0:
+            print "can lift left foot"
+            return True
+            
+        #~ print "can't lift left foot"
+        return False
+        
+         
+    def canLiftRightFoot(self):
+        
+        #MOCK
+        r = random.randint(0, 10)
+        if r == 0:
+            print "can lift right foot"
+            return True
+            
+        #~ print "can't lift right foot"
+        return False       

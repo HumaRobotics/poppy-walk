@@ -2,7 +2,7 @@
 
 import time
 
-HAS_REAL_ROBOT = True
+HAS_REAL_ROBOT = False
 
 #############
 # PARAMATERS
@@ -67,8 +67,8 @@ walker = Walker.Walker(poppy)
 walker.init()
 walker.startWalk()
 
-for m in poppy.l_leg:
-    m.compliant = True
+#~ for m in poppy.l_leg:
+    #~ m.compliant = True
 
 for i in range(0, 1):
     walker.oneStep()
