@@ -2,7 +2,7 @@
 
 import time
 
-HAS_REAL_ROBOT = False
+HAS_REAL_ROBOT = True
 
 #############
 # PARAMATERS
@@ -67,10 +67,10 @@ walker = Walker.Walker(poppy)
 walker.init()
 walker.startWalk()
 
-#~ for m in poppy.l_leg:
-    #~ m.compliant = True
+for m in poppy.arms:
+    m.compliant = True
 
-for i in range(0, 1):
+for i in range(0, 6):
     walker.oneStep()
 
 walker.stopWalk()
@@ -78,10 +78,11 @@ walker.stopWalk()
 walker.clean()
 
 if HAS_REAL_ROBOT:
+    time.sleep(0.5)
     for m in poppy.motors:
         m.compliant = True
         
-    time.sleep(1)
+    time.sleep(0.5)
 
     if not FULL_POPPY_HUMANOID:
         poppy.stop_sync()

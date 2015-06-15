@@ -27,6 +27,9 @@ class WalkerModule:
     def doubleSupportLeftExecute(self, motorPositions, motorNextPositions):
         return motorNextPositions
         
+    def reset(self):
+        pass
+        
 #################
 
         
@@ -65,7 +68,7 @@ class AngularControl(WalkerModule):
         
     def execute(self, motorPositions, motorNextPositions, phase=""):
         if self.master is "constant":
-            target = self.referenceMaster
+            target = (1- self.scale)*motorPositions[self.slave]  + self.scale*(self.referenceMaster)
         else:
             target = self.scale*(motorPositions[self.master] - self.referenceMaster)
 

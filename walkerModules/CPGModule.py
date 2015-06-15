@@ -3,12 +3,14 @@ import WalkerModule
 import math
         
 class CPGModule(WalkerModule.WalkerModule):
-    def __init__(self, motorName, dt, amplitude = 1., cycleTime=1., ratio = 0., offset = 0.):
+    def __init__(self, motorName, dt, amplitude = 1., cycleTime=1., startRatio = 0., stopRatio = 1., offset = 0.):
         WalkerModule.WalkerModule.__init__(self)
         self.motorName = motorName
         self.amplitude = amplitude
         self.cycleTime = cycleTime
-        self.currentTime = ratio*cycleTime
+        self.startRatio = startRatio
+        self.currentTime = startRatio*cycleTime
+        self.finishedTime = stopRatio*cycleTime
         self.offset = offset
         self.dt = dt
         self.finished = False
@@ -26,7 +28,7 @@ class CPGModule(WalkerModule.WalkerModule):
             raise Exception,"No motor named: " +self.motorName
             
         motorNextPositions[self.motorName] = self.amplitude*math.sin(2*math.pi*self.currentTime/self.cycleTime) + self.offset
-        print self.motorName, " ",motorNextPositions[self.motorName]
+        #~ print self.motorName, " ",motorNextPositions[self.motorName]
         
         
         #play one step of the file
@@ -37,12 +39,20 @@ class CPGModule(WalkerModule.WalkerModule):
         self.currentTime += self.dt
         if self.currentTime >= self.cycleTime:
             self.currentTime -= self.cycleTime
+        if self.currentTime >= self.finishedTime:
             self.finished = True
         return motorNextPositions
         
+    def reset(self):
+        #~ print "RESET"
+        #~ if self.finished:
+        self.currentTime = self.startRatio*self.cycleTime
+        self.finished = False
+        
+        
     def footLanded(self):
         if self.finished:
-            self.finished = False
+            #~ self.finished = False
             return True
         return False
         

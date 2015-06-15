@@ -147,24 +147,24 @@ class MOCKControlZMP(WalkerModule.WalkerModule):
         pass
         
     def canLiftLeftFoot(self):
-        
+        return True
         #MOCK
-        r = random.randint(0, 10)
-        if r == 0:
-            print "can lift left foot"
-            return True
+        #~ r = random.randint(0, 10)
+        #~ if r == 0:
+            #~ print "can lift left foot"
+            #~ return True
             
         #~ print "can't lift left foot"
-        return False
+        #~ return False
         
          
     def canLiftRightFoot(self):
-        
+        return True
         #MOCK
-        r = random.randint(0, 10)
-        if r == 0:
-            print "can lift right foot"
-            return True
+        #~ r = random.randint(0, 10)
+        #~ if r == 0:
+            #~ print "can lift right foot"
+            #~ return True
             
         #~ print "can't lift right foot"
-        return False       
+        #~ return False       
