@@ -41,11 +41,12 @@ HAS_REAL_ROBOT = True
 
 
 class Walker:
-    def __init__(self, robot):
+    def __init__(self, robot, razor):
         self.robot = robot
         self.dt = 0.05#seconds
         
         self.kinematics = Kinematics.Kinematics()
+        self.razor = razor
         
         self.stepSide = "right"
         
@@ -144,7 +145,13 @@ class Walker:
                 motorPositionsList[self.kinematics.articulationNames.index(m)] =motorPositions[m]
                 
         #~ print motorPositions
-        self.kinematics.updateModel(array(motorPositionsList), 0., 0.)
+        if self.razor is not None:
+            try:
+                razorData = self.razor.eul()
+            except:
+                print "error could not read razor"
+                razorData = [0., 0.]
+        self.kinematics.updateModel(array(motorPositionsList), razorData[0], razorData[1])
 
         
         return motorPositions

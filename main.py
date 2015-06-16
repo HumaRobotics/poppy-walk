@@ -3,6 +3,7 @@
 import time
 
 HAS_REAL_ROBOT = True
+HAS_RAZOR = False
 
 #############
 # PARAMATERS
@@ -43,6 +44,11 @@ def createPoppyCreature():
 #############
 ## MAIN
 #############
+razor = None
+if HAS_RAZOR:
+    from sensors import razor
+    razor = razor.Razor()
+    razor.start()
 
 if HAS_REAL_ROBOT:
     poppy = createPoppyCreature()
@@ -62,7 +68,7 @@ else:
 
 import Walker
 
-walker = Walker.Walker(poppy)
+walker = Walker.Walker(poppy, razor)
 
 walker.init()
 walker.startWalk()
@@ -88,6 +94,8 @@ if HAS_REAL_ROBOT:
         poppy.stop_sync()
         poppy.close()
 
+if HAS_RAZOR:
+    razor.stop()
 
 
 
