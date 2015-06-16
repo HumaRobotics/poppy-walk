@@ -33,8 +33,8 @@ class WalkerModule:
 #################
 
         
-class MOCKPlayJsonModule(WalkerModule):
-    def __init__(self, file):
+class MOCKWalkerModule(WalkerModule):
+    def __init__(self):
         WalkerModule.__init__(self)
 
         
@@ -43,14 +43,22 @@ class MOCKPlayJsonModule(WalkerModule):
         
         
     def footLanded(self):
+        return self.randomBoolean()
         
+    def canLiftLeftFoot(self):
+        return self.randomBoolean()
+ 
+    def canLiftRightFoot(self):
+        return self.randomBoolean()
+        
+    def randomBoolen(self):
         #MOCK
-        r = random.randint(0, 500)
+        r = random.randint(0, 50)
         if r == 0:
-            print "foot landed"
             return True
 
         return False
+        
         
 
 ####################        

@@ -141,6 +141,9 @@ class ControlZMP(WalkerModule.WalkerModule):
             
         #~ print "can't lift right foot"
         return False       
+        
+        
+#########################"
  
 class MOCKControlZMP(WalkerModule.WalkerModule):
     def __init__(self, kinematics):

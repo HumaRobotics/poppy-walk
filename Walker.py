@@ -1,5 +1,5 @@
 
-from walkerModules.WalkerModule import WalkerModule, AngularControl, LoggerModule
+from walkerModules.WalkerModule import WalkerModule, AngularControl, LoggerModule, MOCKWalkerModule
 from walkerModules.PlayJsonModule import PlayJsonModule
 from walkerModules.ControlZMP import ControlZMP, MOCKControlZMP
 from walkerModules.CPGModule import CPGModule
@@ -9,35 +9,7 @@ import random, time, copy
 
 from numpy import array
 
-#############
-# PARAMATERS
-#############
-
 HAS_REAL_ROBOT = True
-
-### Robot config ###
-#~ HAS_IMU = False
-#~ imu_model = "razor"
-
-#~ HAS_FOOT_SENSORS = False
-###
-
-### Activated modules ###
-
-
-#~ HAS_FORWARD_KINEMATICS = False
-#~ HAS_INVERSE_KINEMATICS = False
-
-#~ USE_ZMP = False
-#~ USE_PHASE_DIAGRAM = False
-
-#~ up_foot_trajectory = "CPG" #CPG|play_move
-
-#~ DO_TORSO_STABILIZATION = False
-#~ torso_stabilization = "vertical"
-
-
-###
 
 
 class Walker:
@@ -57,64 +29,79 @@ class Walker:
         self.leftDoubleSupportModules = {}
         
         # foot movement when not on the ground
-        #~ if HAS_REAL_ROBOT :
-            #~ self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep.json")
-            #~ self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep.json")
-        #~ else:
-        #~ self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep2.json")
-        #~ self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep2.json")    
-        CPGstepTime = 2.
-        #~ self.rightStepModules["swingFoot"] = CPGModule("r_knee_y", self.dt, cycleTime = CPGcycleTime, amplitude = 30)
-        self.leftStepModules["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, stopRatio = 0.5)
-        self.leftStepModules["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =2*CPGstepTime, amplitude = 30, offset = 10)
-        self.leftStepModules["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -30, offset = -10)
         
-        self.leftStepModules["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, offset = 10)
-        self.leftStepModules["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, offset = -10)
-    
-        
-        self.rightStepModules["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, stopRatio = 0.5)
-        self.rightStepModules["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 30, offset = 10)
-        self.rightStepModules["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -30, offset = -10)
-        
-        self.rightStepModules["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, offset = 10)
-        self.rightStepModules["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, offset = -10)
-        
-        CPGDSTime = 0.5
-        
-        self.walkModules["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio = (2*CPGstepTime+CPGDSTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = 10, offset = 0)
-        self.walkModules["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime), startRatio = (CPGstepTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = -10, offset = 0)
-        # control of torso
-        #~ if HAS_REAL_ROBOT :
-            #~ self.walkModules["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
+        if self.robot is None:
+            self.walkModules["fake"] = MOCKWalkerModule() #mock module that implements footLanded, canLiftLeftFoot and canLiftRightFoot
+            self.leftFootLandedModule = "fake" #name of a module implementing footLanded
+            self.rightFootLandedModule = "fake"#name of a module implementing footLanded
+            self.canLiftLeftFootModule = "fake"#name of a module implementing canLiftLeftFoot
+            self.canLiftRightFootModule ="fake"   #name of a module implementing canLiftRightFoot
+        else:
+            
+            self.leftFootLandedModule = "l_ankle_y"
+            self.rightFootLandedModule = "r_ankle_y"
+            self.canLiftLeftFootModule = "l_hip_x"
+            self.canLiftRightFootModule = "r_hip_x"    
 
-        self.walkModules["keep bust_x"] = AngularControl("constant", "bust_x", scale = 0.1)
-        self.walkModules["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.1)                   
-        self.walkModules["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.1)
-        self.walkModules["keep abs_y"] = AngularControl("constant", "abs_y", scale = 0.1) 
-        self.walkModules["keep abs_x"] = AngularControl("constant", "abs_x", scale = 0.1) 
-        
-        #~ self.leftStepModules["keep r_hip_z"] = AngularControl("constant", "r_hip_z") 
-        #~ self.leftStepModules["keep r_hip_y"] = AngularControl("constant", "r_hip_y") 
-        #~ self.leftStepModules["keep r_hip_x"] = AngularControl("constant", "r_hip_x") 
-        #~ self.leftStepModules["keep r_knee_y"] = AngularControl("constant", "r_knee_y") 
-        #~ self.leftStepModules["keep r_ankle_y"] = AngularControl("constant", "r_ankle_y") 
-        
-        #~ self.rightStepModules["keep l_hip_z"] = AngularControl("constant", "l_hip_z") 
-        #~ self.rightStepModules["keep l_hip_y"] = AngularControl("constant", "l_hip_y") 
-        #~ self.rightStepModules["keep l_hip_x"] = AngularControl("constant", "l_hip_x") 
-        #~ self.rightStepModules["keep l_knee_y"] = AngularControl("constant", "l_knee_y") 
-        #~ self.rightStepModules["keep l_ankle_y"] = AngularControl("constant", "l_ankle_y") 
-        
-        self.walkModules["logger"] = LoggerModule(["l_hip_x", "l_knee_y", "r_knee_y"])
-        
-        # balancing module
-        #~ self.walkModules["balancing"] = MOCKControlZMP(self.kinematics)
-        
-        self.leftFootLandedModule = "l_ankle_y"
-        self.rightFootLandedModule = "r_ankle_y"
-        self.canLiftLeftFootModule = "l_hip_x"
-        self.canLiftRightFootModule = "r_hip_x"       
+            #~ self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep2.json")
+            #~ self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep2.json")    
+            
+            
+            CPGstepTime = 2. #time of step phase
+            CPGDSTime = 0.5 #time of double support phase
+            
+            #############
+            ## walkModules : active during all phases
+            
+            #transfer weight
+            self.walkModules["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio = (2*CPGstepTime+CPGDSTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = 10, offset = 0)
+            self.walkModules["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime), startRatio = (CPGstepTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = -10, offset = 0)
+           
+           #keep bust at 0
+            self.walkModules["keep bust_x"] = AngularControl("constant", "bust_x", scale = 0.1)
+            self.walkModules["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.1)                   
+            self.walkModules["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.1)
+            self.walkModules["keep abs_y"] = AngularControl("constant", "abs_y", scale = 0.1) 
+            self.walkModules["keep abs_x"] = AngularControl("constant", "abs_x", scale = 0.1) 
+            
+            #~ self.walkModules["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
+            
+            # balancing module
+            #~ self.walkModules["balancing"] = ControlZMP(self.kinematics)
+            
+            #logger module
+            #~ self.walkModules["logger"] = LoggerModule(["l_hip_x", "l_knee_y", "r_knee_y"])
+            
+            #############
+            ## leftStepModules : active during left step (left foot up)
+            
+            #left leg bend
+            self.leftStepModules["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, stopRatio = 0.5)
+            self.leftStepModules["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =2*CPGstepTime, amplitude = 30, offset = 10)
+            self.leftStepModules["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -30, offset = -10)
+            #right leg gets straight
+            self.leftStepModules["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, offset = 10)
+            self.leftStepModules["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, offset = -10)
+
+            
+            #############
+            ## rightStepModules : active during right step (right foot up)
+            #right leg bent
+            self.rightStepModules["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, stopRatio = 0.5)
+            self.rightStepModules["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 30, offset = 10)
+            self.rightStepModules["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -30, offset = -10)
+            #left leg gets straight
+            self.rightStepModules["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, offset = 10)
+            self.rightStepModules["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, offset = -10)
+ 
+            
+            #############
+            ## leftDoubleSupportModules : active during left double support phase (both feet down, left in front)
+            
+            #############
+            ## rightDoubleSupportModules : active during right double support phase (both feet down, right in front)
+            
+   
         
         
     ###
