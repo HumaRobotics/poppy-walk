@@ -14,6 +14,8 @@ class WalkerModule:
             return self.stepLeftExecute(motorPositions, motorNextPositions)
         elif phase == "left double support":
             return self.doubleSupportLeftExecute(motorPositions, motorNextPositions)
+        else:
+            print "ERROR: walker module wrong phase name ",phase
             
     def stepRightExecute(self, motorPositions, motorNextPositions):
         return motorNextPositions

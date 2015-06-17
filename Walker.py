@@ -9,9 +9,6 @@ import random, time, copy
 
 from numpy import array
 
-HAS_REAL_ROBOT = True
-
-
 class Walker:
     def __init__(self, robot, razor):
         self.robot = robot
@@ -68,7 +65,7 @@ class Walker:
             #~self.walkModules["fullWalkModules"]["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
             
             # balancing module
-            #~ self.walkModules["fullWalkModules"]["balancing"] = ControlZMP(self.kinematics)
+            self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
             
             #logger module
             #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule(["l_hip_x", "l_knee_y", "r_knee_y"])
@@ -106,9 +103,6 @@ class Walker:
         
         
     ###
-
-      
-
     
     def update(self):
         
@@ -142,8 +136,13 @@ class Walker:
         
         return motorPositions
         
-    def initPhase(self, modulesName):
-        for m in self.walkModules[modulesName].values():
+    def initPhase(self, phase):
+        if phase == "right step" or phase == "right double support":
+            self.kinematics.refFrame = "RFoot"
+        else:
+            self.kinematics.refFrame = "LFoot"
+            
+        for m in self.walkModules[phase].values():
             m.reset()
         
     def setMotorPositions(self, positions):
@@ -169,13 +168,16 @@ class Walker:
         motorPositions = self.update()
         
         motorNextPositions = copy.deepcopy(motorPositions)
+        #~ print motorNextPositions.keys()
         
         #modify motor next positions by each module
         for m in self.walkModules[phase].values():
             motorNextPositions = m.execute(motorPositions, motorNextPositions, phase=phase)
+            #~ print m, " ",motorNextPositions.keys()
             
         for m in self.walkModules["fullWalkModules"].values():
-            motorNextPositions = m.execute(motorPositions, motorNextPositions)
+            motorNextPositions = m.execute(motorPositions, motorNextPositions, phase=phase)
+            #~ print m, " ",motorNextPositions.keys()
             
         #Apply modified values
         #~ self.setMotorPositions(motorNextPositions)
