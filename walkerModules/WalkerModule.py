@@ -100,14 +100,14 @@ class AngularControl(WalkerModule):
 
 class LoggerModule(WalkerModule):
     def __init__(self, motorsList):
+        WalkerModule.__init__(self)
         self.motorsList = motorsList
-        self.pos = {}
         for m in self.motorsList:
-            self.pos[m] = []
+            self.logs[m] = []
             
     def execute(self, motorPositions, motorNextPositions, phase=""):
         for m in self.motorsList:
-            self.pos[m].append(motorPositions[m])       
+            self.logs[m].append(motorPositions[m])       
         return motorNextPositions
         
         

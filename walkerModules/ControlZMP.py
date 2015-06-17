@@ -8,8 +8,8 @@ class ControlZMP(WalkerModule.WalkerModule):
         WalkerModule.WalkerModule.__init__(self)
         self.kinematics = kinematics
         self.ZMPpos = []
-        self.logs["xZMP"] = []
-        self.logs["yZMP"] = []
+        #~ self.logs["xZMP"] = []
+        #~ self.logs["yZMP"] = []
     
     def stepRightExecute(self, motorPositions, motorNextPositions):
         #~ print "ZMP step right"
@@ -56,8 +56,8 @@ class ControlZMP(WalkerModule.WalkerModule):
         xZMP = position[0] - acceleration[0]*9.81/(position[2])
         yZMP = position[1] - acceleration[1]*9.81/(position[2])
         
-        self.logs["xZMP"].append(xZMP)
-        self.logs["yZMP"].append(yZMP)
+        #~ self.logs["xZMP"].append(xZMP)
+        #~ self.logs["yZMP"].append(yZMP)
         
         print "pos ZMP ",[xZMP, yZMP]
         
