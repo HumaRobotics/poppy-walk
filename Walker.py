@@ -7,7 +7,7 @@ import Kinematics
 
 import random, time, copy
 
-from numpy import array
+from numpy import array, linspace
 
 class Walker:
     def __init__(self, robot, razor):
@@ -187,6 +187,7 @@ class Walker:
     def waitForStepEnd(self):
         #TODO : improve to wait real time
         time.sleep(self.dt)
+        
     ###
         
     def stepRight(self):
@@ -285,21 +286,44 @@ class Walker:
             #~ except:
                 #~ pass
                 
-        if "logger" in self.walkModules["fullWalkModules"].keys():
-            #DIRTY
-            print "### plotting ###"
-            import pylab 
+        self.plot()
+        #~ if "logger" in self.walkModules["fullWalkModules"].keys():
+            #~ #DIRTY
+            #~ print "### plotting ###"
+            #~ import pylab 
             
-            pos1 = self.walkModules["logger"].pos["l_hip_x"]
-            pos2 = self.walkModules["logger"].pos["l_knee_y"]
-            pos3 = self.walkModules["logger"].pos["r_knee_y"]
+            #~ pos1 = self.walkModules["logger"].pos["l_hip_x"]
+            #~ pos2 = self.walkModules["logger"].pos["l_knee_y"]
+            #~ pos3 = self.walkModules["logger"].pos["r_knee_y"]
             
-            t = range(0, len(pos1))
+            #~ t = range(0, len(pos1))
 
-            pylab.plot(t,pos1, "r-", t, pos2, "b-", t, pos3, "g-")
+            #~ pylab.plot(t,pos1, "r-", t, pos2, "b-", t, pos3, "g-")
 
-            pylab.grid(True)
-            pylab.savefig("one_step.png")
+            #~ pylab.grid(True)
+            #~ pylab.savefig("one_step.png")
+     
+    def plot(self):
+        import pylab
+        
+        colors = ['r', 'g', 'b', 'c', 'm', 'y', 'k']
+        colorsIndex = 0
+        
+        for modules in self.walkModules.values():
+            for module in modules.values():
+                #for all modules, if there is log, plot it
+                toPlot = module.logs
+                for dataName in toPlot.keys():
+                    pos = toPlot[dataName]
+                    t = linspace(0., 1.*len(pos)*self.dt, len(pos))
+        
+                    pylab.plot(t, pos, '-'+colors[colorsIndex], label=dataName)
+                    colorsIndex += 1
+                    if colorsIndex >= len(colors):
+                        colorsIndex -= len(colors)
+        pylab.legend(loc='upper right')
+        pylab.grid(True)
+        pylab.savefig("walk_data.png")
         
     def clean(self):
         pass

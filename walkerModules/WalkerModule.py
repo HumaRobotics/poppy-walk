@@ -3,7 +3,7 @@ import random
 
 class WalkerModule:
     def __init__(self):
-        pass
+        self.logs = {}
         
     def execute(self, motorPositions, motorNextPositions, phase=""):
         if phase == "right step":
@@ -31,6 +31,9 @@ class WalkerModule:
         
     def reset(self):
         pass
+        
+    def getLogs(self):
+        return self.logs
         
 #################
 
