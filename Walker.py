@@ -17,6 +17,8 @@ class Walker:
         self.kinematics = Kinematics.Kinematics()
         self.razor = razor
         
+        
+        
         self.stepSide = "right"
         
         self.walkModules = {}
@@ -35,6 +37,7 @@ class Walker:
             self.canLiftLeftFootModule = "fake"#name of a module implementing canLiftLeftFoot
             self.canLiftRightFootModule ="fake"   #name of a module implementing canLiftRightFoot
         else:
+            self.controlledMotors = self.robot.legs + self.robot.torso
             
             self.leftFootLandedModule = "l_ankle_y"
             self.rightFootLandedModule = "r_ankle_y"
@@ -52,10 +55,10 @@ class Walker:
             ## walkModules : active during all phases
             
             #transfer weight
-            self.walkModules["fullWalkModules"]["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio = (2*CPGstepTime+CPGDSTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = 10, offset = 0)
-            self.walkModules["fullWalkModules"]["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime), startRatio = (CPGstepTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = -10, offset = 0)
+            self.walkModules["fullWalkModules"]["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio = (2*CPGstepTime+CPGDSTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = 0., offset = 0)
+            self.walkModules["fullWalkModules"]["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime), startRatio = (CPGstepTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = -0., offset = 0)
            
-           #keep bust at 0
+           #~ #keep bust at 0
             self.walkModules["fullWalkModules"]["keep bust_x"] = AngularControl("constant", "bust_x", scale = 0.1)
             self.walkModules["fullWalkModules"]["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.1)                   
             self.walkModules["fullWalkModules"]["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.1)
@@ -65,7 +68,7 @@ class Walker:
             #~self.walkModules["fullWalkModules"]["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
             
             # balancing module
-            self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
+            #~ self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
             
             #logger module
             self.walkModules["fullWalkModules"]["logger"] = LoggerModule(["l_hip_x", "l_knee_y", "r_knee_y"])
@@ -99,7 +102,9 @@ class Walker:
             #############
             ## rightDoubleSupportModules : active during right double support phase (both feet down, right in front)
             
-   
+        
+        self.initTime = time.time()
+        self.lastTime = self.initTime
         
         
     ###
@@ -110,7 +115,7 @@ class Walker:
         motorPositions = {}
         motorPositionsList = [0.]*25
         if self.robot is not None:
-            for m in self.robot.motors:
+            for m in self.controlledMotors:
                 motorPositions[m.name] = m.present_position
                 motorPositionsList[self.kinematics.articulationNames.index(m.name)] =motorPositions[m.name]
                 
@@ -121,7 +126,7 @@ class Walker:
                 
         #~ print motorPositions
         
-        #read razor data
+        #~ #read razor data
         razorData = [0., 0.]
         if self.razor is not None:
             try:
@@ -137,7 +142,7 @@ class Walker:
         return motorPositions
         
     def initPhase(self, phase):
-        if phase == "right step" or phase == "right double support":
+        if phase == "left step" or phase == "right double support":
             self.kinematics.refFrame = "RFoot"
         else:
             self.kinematics.refFrame = "LFoot"
@@ -146,24 +151,56 @@ class Walker:
             m.reset()
         
     def setMotorPositions(self, positions):
+        pass
         if self.robot is not None:
-            for m in self.robot.motors:
-                m.goto_position(positions[m.name], self.dt, wait=False)
+            #~ self.robot.goto_position(positions, self.dt, wait=False)
+            for m in self.controlledMotors:
+                #~ m.goto_position(positions[m.name], self.dt, wait=False)
+                m.goal_position = positions[m.name]
  
     def setMotorSpeeds(self, positions, positionsBefore):
         if self.robot is not None:
-            for m in self.robot.motors:
+            for m in self.controlledMotors:
                 #~ if m.name == "l_knee_y":
                     
                 speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
+                
+                #~ if m.name == "l_hip_x":
+                    #~ print "speed ",speed
                 #~ print m.name, speed
-                if speed > 20:
-                    speed = 20
-                if speed < -20:
-                    speed = -20
+                max_speed = 50
+                if speed > max_speed:
+                    speed = max_speed
+                if speed < -max_speed:
+                    speed = -max_speed
                 m.goal_speed = speed    
+                
+    def moveMotors(self, positions, positionsBefore):
+        if self.robot is not None:
+            for m in self.controlledMotors:
+                
+                    
+                speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
+                
+                if m.name == "l_hip_x":
+                    print "speed ",speed
+                
+                #~ print m.name, speed
+                max_speed = 50
+                #~ if speed > max_speed:
+                    #~ speed = max_speed
+                #~ if speed < -max_speed:
+                    #~ speed = -max_speed
+                    
+                if abs(speed) < max_speed:
+                    m.goal_speed = speed    
+                else:
+                    #~ m.goal_speed = 0.
+                    m.goal_position = positions[m.name]
+                    #~ m.goto_position(positions[m.name], self.dt, wait=False)
 
     def executeModules(self, phase):
+        #~ print "----"
         #read motor positions
         motorPositions = self.update()
         
@@ -173,20 +210,25 @@ class Walker:
         #modify motor next positions by each module
         for m in self.walkModules[phase].values():
             motorNextPositions = m.execute(motorPositions, motorNextPositions, phase=phase)
-            #~ print m, " ",motorNextPositions.keys()
+            #~ print m#, " ",motorNextPositions.keys()
             
         for m in self.walkModules["fullWalkModules"].values():
             motorNextPositions = m.execute(motorPositions, motorNextPositions, phase=phase)
-            #~ print m, " ",motorNextPositions.keys()
+            #~ print m#, " ",motorNextPositions.keys()
             
         #Apply modified values
-        #~ self.setMotorPositions(motorNextPositions)
-        self.setMotorSpeeds(motorNextPositions, motorPositions)
+        self.setMotorPositions(motorNextPositions)
+        #~ self.setMotorSpeeds(motorNextPositions, motorPositions)
+        #~ self.moveMotors(motorNextPositions, motorPositions)
         
 
     def waitForStepEnd(self):
         #TODO : improve to wait real time
-        time.sleep(self.dt)
+        now = time.time()
+        print "dt ",now - self.lastTime
+        if now - self.lastTime < self.dt:
+            time.sleep(self.dt - now + self.lastTime)
+        self.lastTime = now
         
     ###
         
@@ -287,27 +329,15 @@ class Walker:
                 #~ pass
                 
         self.plot()
-        #~ if "logger" in self.walkModules["fullWalkModules"].keys():
-            #~ #DIRTY
-            #~ print "### plotting ###"
-            #~ import pylab 
-            
-            #~ pos1 = self.walkModules["logger"].pos["l_hip_x"]
-            #~ pos2 = self.walkModules["logger"].pos["l_knee_y"]
-            #~ pos3 = self.walkModules["logger"].pos["r_knee_y"]
-            
-            #~ t = range(0, len(pos1))
 
-            #~ pylab.plot(t,pos1, "r-", t, pos2, "b-", t, pos3, "g-")
-
-            #~ pylab.grid(True)
-            #~ pylab.savefig("one_step.png")
      
     def plot(self):
         import pylab
         
         colors = ['r', 'g', 'b', 'c', 'm', 'y', 'k']
         colorsIndex = 0
+        
+        hasPlot = False
         
         for modules in self.walkModules.values():
             for module in modules.values():
@@ -318,12 +348,15 @@ class Walker:
                     t = linspace(0., 1.*len(pos)*self.dt, len(pos))
         
                     pylab.plot(t, pos, '-'+colors[colorsIndex], label=dataName)
+                    hasPlot = True
                     colorsIndex += 1
                     if colorsIndex >= len(colors):
                         colorsIndex -= len(colors)
-        pylab.legend(loc='upper right')
-        pylab.grid(True)
-        pylab.savefig("walk_data.png")
+        if hasPlot:
+            print "### plotting ###"
+            pylab.legend(loc='upper right')
+            pylab.grid(True)
+            pylab.savefig("walk_data.png")
         
     def clean(self):
         pass

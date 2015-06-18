@@ -27,7 +27,7 @@ class CPGModule(WalkerModule.WalkerModule):
         if self.motorName not in motorNextPositions.keys():
             raise Exception,"No motor named: " +self.motorName
             
-        motorNextPositions[self.motorName] = self.amplitude*math.sin(2*math.pi*self.currentTime/self.cycleTime) + self.offset
+        motorNextPositions[self.motorName] += self.amplitude*math.sin(2*math.pi*self.currentTime/self.cycleTime) + self.offset - motorPositions[self.motorName]
         #~ print self.motorName, " ",motorNextPositions[self.motorName]
         
         

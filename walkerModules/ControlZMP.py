@@ -1,15 +1,17 @@
 import WalkerModule
 import random
 
-
+from numpy import zeros
 
 class ControlZMP(WalkerModule.WalkerModule):
     def __init__(self, kinematics):
         WalkerModule.WalkerModule.__init__(self)
         self.kinematics = kinematics
         self.ZMPpos = []
-        #~ self.logs["xZMP"] = []
-        #~ self.logs["yZMP"] = []
+        #~ self.logs["correction"] = []
+        self.logs["xZMP"] = []
+        self.logs["yZMP"] = []
+        
     
     def stepRightExecute(self, motorPositions, motorNextPositions):
         #~ print "ZMP step right"
@@ -33,7 +35,7 @@ class ControlZMP(WalkerModule.WalkerModule):
         
         
     def controlZMP(self, motorPositions, motorNextPositions, referencePosition=""):
-        print "----"
+        #~ print "----"
         #~ if referencePosition == "":
             #~ return motorNextPositions
         
@@ -43,7 +45,7 @@ class ControlZMP(WalkerModule.WalkerModule):
             #~ jacobian = self.kinematics.points["pelvis"]["jacobian"]
             #~ print jacobian
             acceleration = self.kinematics.getAcceleration("pelvis")
-            print position
+            #~ print position
             #~ print acceleration
 
             
@@ -56,10 +58,27 @@ class ControlZMP(WalkerModule.WalkerModule):
         xZMP = position[0] - acceleration[0]*9.81/(position[2])
         yZMP = position[1] - acceleration[1]*9.81/(position[2])
         
-        #~ self.logs["xZMP"].append(xZMP)
-        #~ self.logs["yZMP"].append(yZMP)
+        self.logs["xZMP"].append(xZMP)
+        self.logs["yZMP"].append(yZMP)
         
-        print "pos ZMP ",[xZMP, yZMP]
+        #~ print "pos ZMP ",[xZMP, yZMP]
+        
+        goalZMP = [0. , 0. ]
+        coefX = 1.
+        coefY = -30.
+        
+        correctionX = coefX*(xZMP - goalZMP[0])
+        correctionY = coefY*(yZMP - goalZMP[1])
+        #~ print "correction Y ", correctionY
+        #~ self.logs["correction"].append(correctionY )
+        
+        motorNextPositions["r_hip_x"] += correctionY
+        motorNextPositions["l_hip_x"] -= correctionY
+        
+        
+        
+        
+        
         
         #~ goalZMP = [-position[0] , -position[1] ]
         #~ goalZ = 0.40
