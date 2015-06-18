@@ -76,7 +76,7 @@ walker.startWalk()
 for m in poppy.arms:
     m.compliant = True
 
-for i in range(0,6):
+for i in range(0,12):
     walker.oneStep()
 
 walker.stopWalk()

@@ -55,10 +55,10 @@ class Walker:
             ## walkModules : active during all phases
             
             #transfer weight
-            self.walkModules["fullWalkModules"]["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio = (2*CPGstepTime+CPGDSTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = 0., offset = 0)
-            self.walkModules["fullWalkModules"]["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime), startRatio = (CPGstepTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = -0., offset = 0)
+            self.walkModules["fullWalkModules"]["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio = (2*CPGstepTime+CPGDSTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = 10., offset = 0)
+            self.walkModules["fullWalkModules"]["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime), startRatio = (CPGstepTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = -10., offset = 0)
            
-           #~ #keep bust at 0
+           #keep bust at 0
             self.walkModules["fullWalkModules"]["keep bust_x"] = AngularControl("constant", "bust_x", scale = 0.1)
             self.walkModules["fullWalkModules"]["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.1)                   
             self.walkModules["fullWalkModules"]["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.1)
@@ -71,7 +71,7 @@ class Walker:
             #~ self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
             
             #logger module
-            self.walkModules["fullWalkModules"]["logger"] = LoggerModule(["l_hip_x", "l_knee_y", "r_knee_y"])
+            #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule(["l_hip_x", "l_knee_y", "r_knee_y"])
             
             #############
             ## leftStepModules : active during left step (left foot up)
@@ -178,24 +178,17 @@ class Walker:
     def moveMotors(self, positions, positionsBefore):
         if self.robot is not None:
             for m in self.controlledMotors:
-                
-                    
+
                 speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
-                
-                if m.name == "l_hip_x":
-                    print "speed ",speed
-                
-                #~ print m.name, speed
-                max_speed = 50
-                #~ if speed > max_speed:
-                    #~ speed = max_speed
-                #~ if speed < -max_speed:
-                    #~ speed = -max_speed
-                    
+
+                max_speed = 30
+
                 if abs(speed) < max_speed:
+                    #~ print m.name, " SPEED"
                     m.goal_speed = speed    
                 else:
-                    #~ m.goal_speed = 0.
+                    #~ print m.name, " POSITION"
+                    m.goal_speed = 2*max_speed
                     m.goal_position = positions[m.name]
                     #~ m.goto_position(positions[m.name], self.dt, wait=False)
 
@@ -217,18 +210,20 @@ class Walker:
             #~ print m#, " ",motorNextPositions.keys()
             
         #Apply modified values
-        self.setMotorPositions(motorNextPositions)
+        #~ self.setMotorPositions(motorNextPositions)
         #~ self.setMotorSpeeds(motorNextPositions, motorPositions)
-        #~ self.moveMotors(motorNextPositions, motorPositions)
+        self.moveMotors(motorNextPositions, motorPositions)
         
 
     def waitForStepEnd(self):
         #TODO : improve to wait real time
         now = time.time()
         print "dt ",now - self.lastTime
+        print "time ",now - self.initTime
         if now - self.lastTime < self.dt:
             time.sleep(self.dt - now + self.lastTime)
-        self.lastTime = now
+        self.lastTime =  time.time()
+        
         
     ###
         
