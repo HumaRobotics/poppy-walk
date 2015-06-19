@@ -27,7 +27,7 @@ class CPGModule(WalkerModule.WalkerModule):
         if self.motorName not in motorNextPositions.keys():
             raise Exception,"No motor named: " +self.motorName
             
-        motorNextPositions[self.motorName] = self.amplitude*math.sin(2*math.pi*self.currentTime/self.cycleTime) + self.offset
+        motorNextPositions[self.motorName] += self.amplitude*math.sin(2*math.pi*self.currentTime/self.cycleTime) + self.offset - motorPositions[self.motorName]
         #~ print self.motorName, " ",motorNextPositions[self.motorName]
         
         
@@ -38,7 +38,7 @@ class CPGModule(WalkerModule.WalkerModule):
         
         self.currentTime += self.dt
         if self.currentTime >= self.finishedTime:
-            print self.motorName," foot landed ",self.currentTime
+            #~ print self.motorName," foot landed ",self.currentTime
             self.finished = True
             #~ print self.motorName, " ","finished"
         if self.currentTime >= self.cycleTime:
@@ -56,7 +56,7 @@ class CPGModule(WalkerModule.WalkerModule):
         
     def footLanded(self):
         if self.finished:
-            print self.motorName," foot landed ",self.currentTime
+            #~ print self.motorName," foot landed ",self.currentTime
             #~ self.finished = False
             return True
         return False

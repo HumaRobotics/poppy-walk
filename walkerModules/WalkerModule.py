@@ -3,7 +3,7 @@ import random
 
 class WalkerModule:
     def __init__(self):
-        pass
+        self.logs = {}
         
     def execute(self, motorPositions, motorNextPositions, phase=""):
         if phase == "right step":
@@ -14,6 +14,8 @@ class WalkerModule:
             return self.stepLeftExecute(motorPositions, motorNextPositions)
         elif phase == "left double support":
             return self.doubleSupportLeftExecute(motorPositions, motorNextPositions)
+        else:
+            print "ERROR: walker module wrong phase name ",phase
             
     def stepRightExecute(self, motorPositions, motorNextPositions):
         return motorNextPositions
@@ -30,11 +32,14 @@ class WalkerModule:
     def reset(self):
         pass
         
+    def getLogs(self):
+        return self.logs
+        
 #################
 
         
-class MOCKPlayJsonModule(WalkerModule):
-    def __init__(self, file):
+class MOCKWalkerModule(WalkerModule):
+    def __init__(self):
         WalkerModule.__init__(self)
 
         
@@ -43,14 +48,22 @@ class MOCKPlayJsonModule(WalkerModule):
         
         
     def footLanded(self):
+        return self.randomBoolean()
         
+    def canLiftLeftFoot(self):
+        return self.randomBoolean()
+ 
+    def canLiftRightFoot(self):
+        return self.randomBoolean()
+        
+    def randomBoolen(self):
         #MOCK
-        r = random.randint(0, 500)
+        r = random.randint(0, 50)
         if r == 0:
-            print "foot landed"
             return True
 
         return False
+        
         
 
 ####################        
@@ -87,14 +100,14 @@ class AngularControl(WalkerModule):
 
 class LoggerModule(WalkerModule):
     def __init__(self, motorsList):
+        WalkerModule.__init__(self)
         self.motorsList = motorsList
-        self.pos = {}
         for m in self.motorsList:
-            self.pos[m] = []
+            self.logs[m] = []
             
     def execute(self, motorPositions, motorNextPositions, phase=""):
         for m in self.motorsList:
-            self.pos[m].append(motorPositions[m])       
+            self.logs[m].append(motorPositions[m])       
         return motorNextPositions
         
         

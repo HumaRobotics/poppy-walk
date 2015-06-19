@@ -1,5 +1,5 @@
 
-from walkerModules.WalkerModule import WalkerModule, AngularControl, LoggerModule
+from walkerModules.WalkerModule import WalkerModule, AngularControl, LoggerModule, MOCKWalkerModule
 from walkerModules.PlayJsonModule import PlayJsonModule
 from walkerModules.ControlZMP import ControlZMP, MOCKControlZMP
 from walkerModules.CPGModule import CPGModule
@@ -7,117 +7,292 @@ import Kinematics
 
 import random, time, copy
 
-from numpy import array
-
-#############
-# PARAMATERS
-#############
-
-HAS_REAL_ROBOT = True
-
-### Robot config ###
-#~ HAS_IMU = False
-#~ imu_model = "razor"
-
-#~ HAS_FOOT_SENSORS = False
-###
-
-### Activated modules ###
-
-
-#~ HAS_FORWARD_KINEMATICS = False
-#~ HAS_INVERSE_KINEMATICS = False
-
-#~ USE_ZMP = False
-#~ USE_PHASE_DIAGRAM = False
-
-#~ up_foot_trajectory = "CPG" #CPG|play_move
-
-#~ DO_TORSO_STABILIZATION = False
-#~ torso_stabilization = "vertical"
-
-
-###
-
+from numpy import array, linspace
 
 class Walker:
-    def __init__(self, robot):
+    def __init__(self, robot, razor):
         self.robot = robot
         self.dt = 0.05#seconds
         
         self.kinematics = Kinematics.Kinematics()
+        self.razor = razor
+        
+        
         
         self.stepSide = "right"
         
         self.walkModules = {}
-        self.rightStepModules = {}
-        self.rightDoubleSupportModules = {}
-        self.leftStepModules = {}
-        self.leftDoubleSupportModules = {}
+        self.walkModules["fullWalkModules"] = {}
+        self.walkModules["right step"] = {}
+        self.walkModules["right double support"] = {}
+        self.walkModules["left step"] = {}
+        self.walkModules["left double support"] = {}
         
         # foot movement when not on the ground
-        #~ if HAS_REAL_ROBOT :
-            #~ self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep.json")
-            #~ self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep.json")
-        #~ else:
-        #~ self.rightStepModules["swingFoot"] = MOCKPlayJsonModule("json/rlegstep2.json")
-        #~ self.leftStepModules["swingFoot"] = MOCKPlayJsonModule("json/llegstep2.json")    
-        CPGstepTime = 2.
-        #~ self.rightStepModules["swingFoot"] = CPGModule("r_knee_y", self.dt, cycleTime = CPGcycleTime, amplitude = 30)
-        self.leftStepModules["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, stopRatio = 0.5)
-        self.leftStepModules["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =2*CPGstepTime, amplitude = 30, offset = 10)
-        self.leftStepModules["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -30, offset = -10)
         
-        self.leftStepModules["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, offset = 10)
-        self.leftStepModules["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, offset = -10)
-    
-        
-        self.rightStepModules["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, stopRatio = 0.5)
-        self.rightStepModules["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 30, offset = 10)
-        self.rightStepModules["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -30, offset = -10)
-        
-        self.rightStepModules["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, offset = 10)
-        self.rightStepModules["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, offset = -10)
-        
-        CPGDSTime = 0.5
-        
-        self.walkModules["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio = (2*CPGstepTime+CPGDSTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = 10, offset = 0)
-        self.walkModules["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime), startRatio = (CPGstepTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = -10, offset = 0)
-        # control of torso
-        #~ if HAS_REAL_ROBOT :
-            #~ self.walkModules["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
+        if self.robot is None:
+            self.walkModules["fullWalkModules"]["fake"] = MOCKWalkerModule() #mock module that implements footLanded, canLiftLeftFoot and canLiftRightFoot
+            self.leftFootLandedModule = "fake" #name of a module implementing footLanded
+            self.rightFootLandedModule = "fake"#name of a module implementing footLanded
+            self.canLiftLeftFootModule = "fake"#name of a module implementing canLiftLeftFoot
+            self.canLiftRightFootModule ="fake"   #name of a module implementing canLiftRightFoot
+        else:
+            self.controlledMotors = self.robot.legs + self.robot.torso
+            
+            self.leftFootLandedModule = "l_ankle_y"
+            self.rightFootLandedModule = "r_ankle_y"
+            self.canLiftLeftFootModule = "l_hip_x"
+            self.canLiftRightFootModule = "r_hip_x"    
 
-        self.walkModules["keep bust_x"] = AngularControl("constant", "bust_x", scale = 0.1)
-        self.walkModules["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.1)                   
-        self.walkModules["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.1)
-        self.walkModules["keep abs_y"] = AngularControl("constant", "abs_y", scale = 0.1) 
-        self.walkModules["keep abs_x"] = AngularControl("constant", "abs_x", scale = 0.1) 
+            #~ self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep2.json")
+            #~ self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep2.json")    
+            
+            
+            CPGstepTime = 2. #time of step phase
+            CPGDSTime = 0.5 #time of double support phase
+            
+            #############
+            ## walkModules : active during all phases
+            
+            #transfer weight
+            self.walkModules["fullWalkModules"]["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio = (2*CPGstepTime+CPGDSTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = 10., offset = 0)
+            self.walkModules["fullWalkModules"]["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime), startRatio = (CPGstepTime) /(2*(CPGstepTime+CPGDSTime) ), amplitude = -10., offset = 0)
+           
+           #keep bust at 0
+            self.walkModules["fullWalkModules"]["keep bust_x"] = AngularControl("constant", "bust_x", scale = 0.1)
+            self.walkModules["fullWalkModules"]["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.1)                   
+            self.walkModules["fullWalkModules"]["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.1)
+            self.walkModules["fullWalkModules"]["keep abs_y"] = AngularControl("constant", "abs_y", scale = 0.1) 
+            self.walkModules["fullWalkModules"]["keep abs_x"] = AngularControl("constant", "abs_x", scale = 0.1) 
+            
+            #~self.walkModules["fullWalkModules"]["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
+            
+            # balancing module
+            #~ self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
+            
+            #logger module
+            #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule(["l_hip_x", "l_knee_y", "r_knee_y"])
+            
+            #############
+            ## leftStepModules : active during left step (left foot up)
+            
+            #left leg bend
+            self.walkModules["left step"]["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, stopRatio = 0.5)
+            self.walkModules["left step"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =2*CPGstepTime, amplitude = 30, offset = 10)
+            self.walkModules["left step"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -30, offset = -10)
+            #right leg gets straight
+            self.walkModules["left step"]["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, offset = 10)
+            self.walkModules["left step"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, offset = -10)
+
+            
+            #############
+            ## rightStepModules : active during right step (right foot up)
+            #right leg bent
+            self.walkModules["right step"]["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, stopRatio = 0.5)
+            self.walkModules["right step"]["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 30, offset = 10)
+            self.walkModules["right step"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -30, offset = -10)
+            #left leg gets straight
+            self.walkModules["right step"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, offset = 10)
+            self.walkModules["right step"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, offset = -10)
+ 
+            
+            #############
+            ## leftDoubleSupportModules : active during left double support phase (both feet down, left in front)
+            
+            #############
+            ## rightDoubleSupportModules : active during right double support phase (both feet down, right in front)
+            
         
-        #~ self.leftStepModules["keep r_hip_z"] = AngularControl("constant", "r_hip_z") 
-        #~ self.leftStepModules["keep r_hip_y"] = AngularControl("constant", "r_hip_y") 
-        #~ self.leftStepModules["keep r_hip_x"] = AngularControl("constant", "r_hip_x") 
-        #~ self.leftStepModules["keep r_knee_y"] = AngularControl("constant", "r_knee_y") 
-        #~ self.leftStepModules["keep r_ankle_y"] = AngularControl("constant", "r_ankle_y") 
+        self.initTime = time.time()
+        self.lastTime = self.initTime
         
-        #~ self.rightStepModules["keep l_hip_z"] = AngularControl("constant", "l_hip_z") 
-        #~ self.rightStepModules["keep l_hip_y"] = AngularControl("constant", "l_hip_y") 
-        #~ self.rightStepModules["keep l_hip_x"] = AngularControl("constant", "l_hip_x") 
-        #~ self.rightStepModules["keep l_knee_y"] = AngularControl("constant", "l_knee_y") 
-        #~ self.rightStepModules["keep l_ankle_y"] = AngularControl("constant", "l_ankle_y") 
         
-        self.walkModules["logger"] = LoggerModule(["l_hip_x", "l_knee_y", "r_knee_y"])
+    ###
+    
+    def update(self):
         
-        # balancing module
-        #~ self.walkModules["balancing"] = MOCKControlZMP(self.kinematics)
+        #read motors positions
+        motorPositions = {}
+        motorPositionsList = [0.]*25
+        if self.robot is not None:
+            for m in self.controlledMotors:
+                motorPositions[m.name] = m.present_position
+                motorPositionsList[self.kinematics.articulationNames.index(m.name)] =motorPositions[m.name]
+                
+        else:
+            for m in self.kinematics.articulationNames:
+                motorPositions[m] = random.randint(-20, 20)
+                motorPositionsList[self.kinematics.articulationNames.index(m)] =motorPositions[m]
+                
+        #~ print motorPositions
         
-        self.leftFootLandedModule = "l_ankle_y"
-        self.rightFootLandedModule = "r_ankle_y"
-        self.canLiftLeftFootModule = "l_hip_x"
-        self.canLiftRightFootModule = "r_hip_x"       
+        #~ #read razor data
+        razorData = [0., 0.]
+        if self.razor is not None:
+            try:
+                razorData = self.razor.eul()
+            except:
+                print "error could not read razor"
+                
+                
+        #compute kinematics
+        self.kinematics.updateModel(array(motorPositionsList), razorData[0], razorData[1])
+
+        
+        return motorPositions
+        
+    def initPhase(self, phase):
+        if phase == "left step" or phase == "right double support":
+            self.kinematics.refFrame = "RFoot"
+        else:
+            self.kinematics.refFrame = "LFoot"
+            
+        for m in self.walkModules[phase].values():
+            m.reset()
+        
+    def setMotorPositions(self, positions):
+        pass
+        if self.robot is not None:
+            #~ self.robot.goto_position(positions, self.dt, wait=False)
+            for m in self.controlledMotors:
+                #~ m.goto_position(positions[m.name], self.dt, wait=False)
+                m.goal_position = positions[m.name]
+ 
+    def setMotorSpeeds(self, positions, positionsBefore):
+        if self.robot is not None:
+            for m in self.controlledMotors:
+                #~ if m.name == "l_knee_y":
+                    
+                speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
+                
+                #~ if m.name == "l_hip_x":
+                    #~ print "speed ",speed
+                #~ print m.name, speed
+                max_speed = 50
+                if speed > max_speed:
+                    speed = max_speed
+                if speed < -max_speed:
+                    speed = -max_speed
+                m.goal_speed = speed    
+                
+    def moveMotors(self, positions, positionsBefore):
+        if self.robot is not None:
+            for m in self.controlledMotors:
+
+                speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
+
+                max_speed = 30
+
+                if abs(speed) < max_speed:
+                    #~ print m.name, " SPEED"
+                    m.goal_speed = speed    
+                else:
+                    #~ print m.name, " POSITION"
+                    m.goal_speed = 2*max_speed
+                    m.goal_position = positions[m.name]
+                    #~ m.goto_position(positions[m.name], self.dt, wait=False)
+
+    def executeModules(self, phase):
+        #~ print "----"
+        #read motor positions
+        motorPositions = self.update()
+        
+        motorNextPositions = copy.deepcopy(motorPositions)
+        #~ print motorNextPositions.keys()
+        
+        #modify motor next positions by each module
+        for m in self.walkModules[phase].values():
+            motorNextPositions = m.execute(motorPositions, motorNextPositions, phase=phase)
+            #~ print m#, " ",motorNextPositions.keys()
+            
+        for m in self.walkModules["fullWalkModules"].values():
+            motorNextPositions = m.execute(motorPositions, motorNextPositions, phase=phase)
+            #~ print m#, " ",motorNextPositions.keys()
+            
+        #Apply modified values
+        #~ self.setMotorPositions(motorNextPositions)
+        #~ self.setMotorSpeeds(motorNextPositions, motorPositions)
+        self.moveMotors(motorNextPositions, motorPositions)
+        
+
+    def waitForStepEnd(self):
+        #TODO : improve to wait real time
+        now = time.time()
+        print "dt ",now - self.lastTime
+        print "time ",now - self.initTime
+        if now - self.lastTime < self.dt:
+            time.sleep(self.dt - now + self.lastTime)
+        self.lastTime =  time.time()
         
         
     ###
         
+    def stepRight(self):
+        print "### starting step right ###"
+
+        self.initPhase("right step")
+
+        
+        while not self.walkModules["right step"][self.rightFootLandedModule ].footLanded():
+            
+            self.executeModules("right step")
+            
+            self.waitForStepEnd()
+            
+
+    def stepLeft(self):
+        print "### starting step left ###"
+
+        self.initPhase("left step")
+
+        
+        while not self.walkModules["left step"][self.leftFootLandedModule ].footLanded():
+            
+            self.executeModules("left step")
+            
+            self.waitForStepEnd()
+        
+
+
+            
+    def doubleSupportRight(self):
+        print "### starting double support right ###"
+        
+ 
+        self.initPhase("right double support")
+
+        
+        while not self.walkModules["fullWalkModules"][self.canLiftLeftFootModule].canLiftLeftFoot():
+            
+            self.executeModules("right double support")
+            
+            self.waitForStepEnd()       
+        
+  
+    def doubleSupportLeft(self):
+        print "### starting double support left ###"
+        
+        
+         
+        self.initPhase("left double support")
+
+        
+        while not self.walkModules["fullWalkModules"][self.canLiftRightFootModule].canLiftRightFoot():
+            
+            self.executeModules("left double support")
+            
+            self.waitForStepEnd()     
+        
+    ###
+    
+    def init(self):
+        pass
+        
+    def startWalk(self):
+        pass
+        
+        
+            
     def oneStep(self):
         if self.stepSide == "right":
             self.doubleSupportRight()
@@ -128,180 +303,6 @@ class Walker:
             self.doubleSupportLeft()
             self.stepSide = "right"
             self.stepRight()
-            
-    
-    def readMotorPositions(self):
-        motorPositions = {}
-        motorPositionsList = [0.]*25
-        if self.robot is not None:
-            for m in self.robot.motors:
-                motorPositions[m.name] = m.present_position
-                motorPositionsList[self.kinematics.articulationNames.index(m.name)] =motorPositions[m.name]
-                
-        else:
-            for m in self.kinematics.articulationNames:
-                motorPositions[m] = random.randint(-20, 20)
-                motorPositionsList[self.kinematics.articulationNames.index(m)] =motorPositions[m]
-                
-        #~ print motorPositions
-        self.kinematics.updateModel(array(motorPositionsList), 0., 0.)
-
-        
-        return motorPositions
-        
-    def setMotorPositions(self, positions):
-        if self.robot is not None:
-            for m in self.robot.motors:
-                m.goto_position(positions[m.name], self.dt, wait=False)
- 
-    def setMotorSpeeds(self, positions, positionsBefore):
-        if self.robot is not None:
-            for m in self.robot.motors:
-                #~ if m.name == "l_knee_y":
-                    
-                speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
-                #~ print m.name, speed
-                if speed > 20:
-                    speed = 20
-                if speed < -20:
-                    speed = -20
-                m.goal_speed = speed        
-    ###
-        
-    def stepRight(self):
-        print "### starting step right ###"
-        
-        #~ for m in self.walkModules.values():
-            #~ motorNextPositions = m.reset()
-            
-        for m in self.rightStepModules.values():
-            motorNextPositions = m.reset()
-        
-        while not self.rightStepModules[self.rightFootLandedModule ].footLanded():
-            
-            #read motor positions
-            motorPositions = self.readMotorPositions()
-            
-            motorNextPositions = copy.deepcopy(motorPositions)
-
-        
-            #modify motor next positions by each module
-            for m in self.walkModules.values():
-                motorNextPositions = m.execute(motorPositions, motorNextPositions, phase="right step")
-                
-            for m in self.rightStepModules.values():
-                motorNextPositions = m.execute(motorPositions, motorNextPositions)
-                
-            #Apply modified values
-            #~ self.setMotorPositions(motorNextPositions)
-            self.setMotorSpeeds(motorNextPositions, motorPositions)
-            
-            #TODO : improve to wait real time
-            time.sleep(self.dt)
-            
-        
-    def stepLeft(self):
-        print "### starting step left ###"
-
-
-        #~ for m in self.walkModules.values():
-            #~ motorNextPositions = m.reset()
-            
-        for m in self.leftStepModules.values():
-            motorNextPositions = m.reset()
-
-
-        while not self.leftStepModules[self.leftFootLandedModule ].footLanded():
-            
-            #read motor positions
-            motorPositions = self.readMotorPositions()
-            motorNextPositions = copy.deepcopy(motorPositions)
-
-        
-            #modify motor next positions by each module
-            for m in self.walkModules.values():
-                motorNextPositions = m.execute(motorPositions, motorNextPositions, phase="left step")
-                
-            for m in self.leftStepModules.values():
-                motorNextPositions = m.execute(motorPositions, motorNextPositions)
-                
-            #Apply modified values
-            #~ self.setMotorPositions(motorNextPositions)
-            self.setMotorSpeeds(motorNextPositions, motorPositions)
-            
-            #TODO : improve to wait real time
-            time.sleep(self.dt)
-            
-    def doubleSupportRight(self):
-        print "### starting double support right ###"
-
-        #~ for m in self.walkModules.values():
-            #~ motorNextPositions = m.reset()
-            
-        for m in self.rightDoubleSupportModules.values():
-            motorNextPositions = m.reset()
-
-
-        while not self.walkModules[self.canLiftLeftFootModule ].canLiftLeftFoot():
-            
-            #read motor positions
-            motorPositions = self.readMotorPositions()
-            motorNextPositions = copy.deepcopy(motorPositions)
-
-        
-            #modify motor next positions by each module
-            for m in self.walkModules.values():
-                motorNextPositions = m.execute(motorPositions, motorNextPositions, phase="right double support")
-                #~ print motorNextPositions
-            for m in self.rightDoubleSupportModules.values():
-                motorNextPositions = m.execute(motorPositions, motorNextPositions)
-                #~ print motorNextPositions                
-            #Apply modified values
-            #~ self.setMotorPositions(motorNextPositions)
-            self.setMotorSpeeds(motorNextPositions, motorPositions)
-            
-            #TODO : improve to wait real time
-            time.sleep(self.dt)
-        
-    def doubleSupportLeft(self):
-        print "### starting double support left ###"
-
-        #~ for m in self.walkModules.values():
-            #~ motorNextPositions = m.reset()
-            
-        for m in self.leftDoubleSupportModules.values():
-            motorNextPositions = m.reset()
-
-
-        while not self.walkModules[self.canLiftRightFootModule ].canLiftRightFoot():
-            
-            #read motor positions
-            motorPositions = self.readMotorPositions()
-            motorNextPositions = copy.deepcopy(motorPositions)
-
-        
-            #modify motor next positions by each module
-            for m in self.walkModules.values():
-                motorNextPositions = m.execute(motorPositions, motorNextPositions, phase="left double support")
-                
-            for m in self.leftDoubleSupportModules.values():
-                motorNextPositions = m.execute(motorPositions, motorNextPositions)
-                
-            #Apply modified values
-            #~ self.setMotorPositions(motorNextPositions)
-            self.setMotorSpeeds(motorNextPositions, motorPositions)
-            
-            #TODO : improve to wait real time
-            time.sleep(self.dt)        
-        
-    ###
-    
-    def init(self):
-        pass
-        
-    def startWalk(self):
-        pass
-        
         
     def stopWalk(self):
         print "### stopping walk ###"
@@ -322,19 +323,35 @@ class Walker:
             #~ except:
                 #~ pass
                 
-        print "### plotting ###"
-        import pylab 
-        
-        pos1 = self.walkModules["logger"].pos["l_hip_x"]
-        pos2 = self.walkModules["logger"].pos["l_knee_y"]
-        pos3 = self.walkModules["logger"].pos["r_knee_y"]
-        
-        t = range(0, len(pos1))
+        self.plot()
 
-        pylab.plot(t,pos1, "r-", t, pos2, "b-", t, pos3, "g-")
-
-        pylab.grid(True)
-        pylab.savefig("one_step.png")
+     
+    def plot(self):
+        import pylab
+        
+        colors = ['r', 'g', 'b', 'c', 'm', 'y', 'k']
+        colorsIndex = 0
+        
+        hasPlot = False
+        
+        for modules in self.walkModules.values():
+            for module in modules.values():
+                #for all modules, if there is log, plot it
+                toPlot = module.logs
+                for dataName in toPlot.keys():
+                    pos = toPlot[dataName]
+                    t = linspace(0., 1.*len(pos)*self.dt, len(pos))
+        
+                    pylab.plot(t, pos, '-'+colors[colorsIndex], label=dataName)
+                    hasPlot = True
+                    colorsIndex += 1
+                    if colorsIndex >= len(colors):
+                        colorsIndex -= len(colors)
+        if hasPlot:
+            print "### plotting ###"
+            pylab.legend(loc='upper right')
+            pylab.grid(True)
+            pylab.savefig("walk_data.png")
         
     def clean(self):
         pass

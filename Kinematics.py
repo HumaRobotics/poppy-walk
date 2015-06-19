@@ -106,8 +106,6 @@ class Kinematics:
         self.segments["PQ"] = array([0,0,0])
         self.segments["QR"] = array([0,0,0])
         self.segments["RS"] = array([0,0,0])
-
-#computed points: sternum, l_shoulder, r_shouler, l_elbow, r_elbow, l_hand, r_hand, neck, nose, pelvis, r_hip, l_hip, r_knee, l_knee, r_ankle, l_ankle, r_toe, l_toe
         
 
     def updateModel(self, q, theta, phi):
