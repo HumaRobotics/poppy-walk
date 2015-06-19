@@ -79,7 +79,7 @@ time.sleep(0.5)
 if walker.init():
     walker.startWalk()
 
-    for i in range(0,8):
+    for i in range(0,16):
         walker.oneStep()
 
     walker.stopWalk()

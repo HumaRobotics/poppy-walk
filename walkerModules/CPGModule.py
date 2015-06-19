@@ -3,7 +3,7 @@ import WalkerModule
 import math
         
 class CPGModule(WalkerModule.WalkerModule):
-    def __init__(self, motorName, dt, amplitude = 1., cycleTime=1., startRatio = 0., stopRatio = 1., offset = 0.):
+    def __init__(self, motorName, dt, amplitude = 1., cycleTime=1., startRatio = 0., stopRatio = 1., offset = 0., disabledPhases=[]):
         WalkerModule.WalkerModule.__init__(self)
         self.motorName = motorName
         self.amplitude = amplitude
@@ -14,9 +14,11 @@ class CPGModule(WalkerModule.WalkerModule):
         self.offset = offset
         self.dt = dt
         self.finished = False
+        self.disabledPhases = disabledPhases
 
         
     def execute(self, motorPositions, motorNextPositions, phase=""):
+
         
         #~ print self.currentTime
         if self.finished:
@@ -26,8 +28,9 @@ class CPGModule(WalkerModule.WalkerModule):
 
         if self.motorName not in motorNextPositions.keys():
             raise Exception,"No motor named: " +self.motorName
-            
-        motorNextPositions[self.motorName] += self.amplitude*math.sin(2*math.pi*self.currentTime/self.cycleTime) + self.offset - motorPositions[self.motorName]
+           
+        if phase not in self.disabledPhases:
+            motorNextPositions[self.motorName] += self.amplitude*math.sin(2*math.pi*self.currentTime/self.cycleTime) + self.offset - motorPositions[self.motorName]
         #~ print self.motorName, " ",motorNextPositions[self.motorName]
         
         
