@@ -70,18 +70,21 @@ import Walker
 
 walker = Walker.Walker(poppy, razor)
 
-walker.init()
-walker.startWalk()
+
 
 for m in poppy.arms:
     m.compliant = True
+time.sleep(0.5)
 
-for i in range(0,12):
-    walker.oneStep()
+if walker.init():
+    walker.startWalk()
 
-walker.stopWalk()
+    for i in range(0,2):
+        walker.oneStep()
 
-walker.clean()
+    walker.stopWalk()
+
+    walker.clean()
 
 if HAS_REAL_ROBOT:
     time.sleep(0.5)

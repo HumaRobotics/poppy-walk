@@ -161,12 +161,9 @@ class Walker:
     def setMotorSpeeds(self, positions, positionsBefore):
         if self.robot is not None:
             for m in self.controlledMotors:
-                #~ if m.name == "l_knee_y":
-                    
-                speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
                 
-                #~ if m.name == "l_hip_x":
-                    #~ print "speed ",speed
+                speed = ( positions[m.name] - positionsBefore[m.name] )/self.dt
+
                 #~ print m.name, speed
                 max_speed = 50
                 if speed > max_speed:
@@ -210,16 +207,16 @@ class Walker:
             #~ print m#, " ",motorNextPositions.keys()
             
         #Apply modified values
-        #~ self.setMotorPositions(motorNextPositions)
+        self.setMotorPositions(motorNextPositions)
         #~ self.setMotorSpeeds(motorNextPositions, motorPositions)
-        self.moveMotors(motorNextPositions, motorPositions)
+        #~ self.moveMotors(motorNextPositions, motorPositions)
         
 
     def waitForStepEnd(self):
         #TODO : improve to wait real time
         now = time.time()
-        print "dt ",now - self.lastTime
-        print "time ",now - self.initTime
+        #~ print "dt ",now - self.lastTime
+        #~ print "time ",now - self.initTime
         if now - self.lastTime < self.dt:
             time.sleep(self.dt - now + self.lastTime)
         self.lastTime =  time.time()
@@ -231,12 +228,10 @@ class Walker:
         print "### starting step right ###"
 
         self.initPhase("right step")
-
-        
+  
         while not self.walkModules["right step"][self.rightFootLandedModule ].footLanded():
             
             self.executeModules("right step")
-            
             self.waitForStepEnd()
             
 
@@ -244,49 +239,46 @@ class Walker:
         print "### starting step left ###"
 
         self.initPhase("left step")
-
-        
+  
         while not self.walkModules["left step"][self.leftFootLandedModule ].footLanded():
             
             self.executeModules("left step")
-            
             self.waitForStepEnd()
-        
-
 
             
     def doubleSupportRight(self):
         print "### starting double support right ###"
         
- 
         self.initPhase("right double support")
-
         
         while not self.walkModules["fullWalkModules"][self.canLiftLeftFootModule].canLiftLeftFoot():
             
             self.executeModules("right double support")
-            
             self.waitForStepEnd()       
         
   
     def doubleSupportLeft(self):
         print "### starting double support left ###"
-        
-        
-         
+
         self.initPhase("left double support")
 
-        
         while not self.walkModules["fullWalkModules"][self.canLiftRightFootModule].canLiftRightFoot():
             
             self.executeModules("left double support")
-            
             self.waitForStepEnd()     
         
     ###
     
     def init(self):
-        pass
+        if self.robot is not None:
+            counter = int(30./self.dt) #wait max 30 seconds
+            while counter > 0:
+                counter -= 1
+                if self.robot.l_shoulder_y.present_position < -80 and self.robot.r_shoulder_y.present_position < -80 :
+                    return True
+                self.waitForStepEnd()  
+        print "arms have not been raised"
+        return False
         
     def startWalk(self):
         pass
