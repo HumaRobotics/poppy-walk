@@ -3,8 +3,8 @@ import WalkerModule
 import math
         
 class CPGModule(WalkerModule.WalkerModule):
-    def __init__(self, motorName, dt, amplitude = 1., cycleTime=1., startRatio = 0., stopRatio = 1., offset = 0., disabledPhases=[]):
-        WalkerModule.WalkerModule.__init__(self)
+    def __init__(self, motorName, dt, amplitude = 1., cycleTime=1., startRatio = 0., stopRatio = 1., offset = 0., disabledPhases=[], reset="always"):
+        WalkerModule.WalkerModule.__init__(self, reset)
         self.motorName = motorName
         self.amplitude = amplitude
         self.cycleTime = cycleTime
@@ -32,13 +32,7 @@ class CPGModule(WalkerModule.WalkerModule):
         if phase not in self.disabledPhases:
             motorNextPositions[self.motorName] += self.amplitude*math.sin(2*math.pi*self.currentTime/self.cycleTime) + self.offset - motorPositions[self.motorName]
         #~ print self.motorName, " ",motorNextPositions[self.motorName]
-        
-        
-        #play one step of the file
-        #~ nextPositions = self.move.positions()[self.index]
-        #~ for m in nextPositions.keys():
-            #~ motorNextPositions[m] = nextPositions[m]
-        
+
         self.currentTime += self.dt
         if self.currentTime >= self.finishedTime:
             #~ print self.motorName," foot landed ",self.currentTime
@@ -50,11 +44,12 @@ class CPGModule(WalkerModule.WalkerModule):
 
         return motorNextPositions
         
-    def reset(self):
-        #~ print "RESET"
-        #~ if self.finished:
-        self.currentTime = self.startRatio*self.cycleTime
-        self.finished = False
+    def reset(self, phase=""):
+        
+        if self.resetCondition == "always" or self.resetCondition==phase or (self.resetCondition == "on finished" and self.finished):
+            print "RESET ", self.resetCondition
+            self.currentTime = self.startRatio*self.cycleTime
+            self.finished = False
         
         
     def footLanded(self):

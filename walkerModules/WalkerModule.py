@@ -2,8 +2,10 @@ import random
 #import Kinematics
 
 class WalkerModule:
-    def __init__(self):
+    def __init__(self, reset="always"):
         self.logs = {}
+        #resetConditions = ["always", "never", "if finished"] #phase name !
+        self.resetCondition = reset
         
     def execute(self, motorPositions, motorNextPositions, phase=""):
         if phase == "right step":
@@ -29,7 +31,7 @@ class WalkerModule:
     def doubleSupportLeftExecute(self, motorPositions, motorNextPositions):
         return motorNextPositions
         
-    def reset(self):
+    def reset(self, phase=""):
         pass
         
     def getLogs(self):
