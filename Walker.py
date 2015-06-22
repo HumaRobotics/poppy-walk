@@ -39,8 +39,8 @@ class Walker:
         else:
             self.controlledMotors = self.robot.legs + self.robot.torso
             
-            self.leftFootLandedModule = "l_ankle_y"
-            self.rightFootLandedModule = "r_ankle_y"
+            self.leftFootLandedModule = "l_knee_y" #from left step module !
+            self.rightFootLandedModule = "r_knee_y"
             self.canLiftLeftFootModule = "l_hip_x"
             self.canLiftRightFootModule = "r_hip_x"    
 
@@ -69,59 +69,55 @@ class Walker:
             #~ self.walkModules["fullWalkModules"]["l_hip_z"] = AngularControl("constant", "l_hip_z", scale = 0.5) 
             #~ self.walkModules["fullWalkModules"]["r_hip_z"] = AngularControl("constant", "r_hip_z", scale = 0.5) 
             
-            self.walkModules["fullWalkModules"]["l_hip_z"] = CPGModule("l_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime, startRatio = 0.5, amplitude = -10., disabledPhases=["right step"], reset="right double support")
-            self.walkModules["fullWalkModules"]["r_hip_z"] = CPGModule("r_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio =0., amplitude = -10., disabledPhases=["left step"], reset="left double support")
+            self.walkModules["fullWalkModules"]["l_hip_z"] = CPGModule("l_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime, startRatio = 0.5, amplitude = -30., disabledPhases=["right step", "left step"], reset="right double support")
+            self.walkModules["fullWalkModules"]["r_hip_z"] = CPGModule("r_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio =0., amplitude = -30., disabledPhases=["left step", "right step"], reset="left double support")
 
             #~self.walkModules["fullWalkModules"]["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
             
             
             self.walkModules["fullWalkModules"]["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime =twoStepsTime+2*CPGDSTime, startRatio= 0., amplitude = -10, offset = 10, disabledPhases=["right step"], reset="right double support")
-            self.walkModules["fullWalkModules"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio= 0., amplitude = 10, offset = -10, disabledPhases=["right step"], reset="right double support")
+            self.walkModules["fullWalkModules"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio= 0., amplitude =10, offset = -0, disabledPhases=["right step"], reset="right double support")
+            #~ self.walkModules["fullWalkModules"]["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = 4*(CPGstepTime+2*CPGDSTime) , startRatio= 0.25, amplitude =-20, offset = 10, disabledPhases=["right step"], reset="right double support")
+            self.walkModules["fullWalkModules"]["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = 4*(CPGstepTime+2*CPGDSTime) , startRatio= 0., amplitude =-10, offset = 0, disabledPhases=["right step"], reset="right double support")
+          
           
             self.walkModules["fullWalkModules"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =twoStepsTime+2*CPGDSTime ,startRatio= 0.,  amplitude = -10, offset = 10, disabledPhases=["left step"], reset="left double support")
-            self.walkModules["fullWalkModules"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio= 0., amplitude = 10, offset = -10, disabledPhases=["left step"], reset="left double support")           
+            self.walkModules["fullWalkModules"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio= 0., amplitude = 10, offset = -0, disabledPhases=["left step"], reset="left double support")           
+            #~ self.walkModules["fullWalkModules"]["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = 4*(CPGstepTime+2*CPGDSTime) , startRatio= 0.25, amplitude = -20, offset = 10, disabledPhases=["left step"], reset="left double support")           
+            self.walkModules["fullWalkModules"]["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = 4*(CPGstepTime+2*CPGDSTime) , startRatio= 0., amplitude = -10, offset = 0, disabledPhases=["left step"], reset="left double support")           
             
             # balancing module
             #~ self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
             
             #logger module
-            self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "l_hip_y", "l_knee_y", "l_hip_z", "r_hip_y", "r_knee_y", "r_hip_z"])
-            #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule(["r_hip_z", "l_hip_z"])
+            self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "l_ankle_y", "l_knee_y", "r_ankle_y"])#"l_hip_x", "l_hip_y", "l_hip_z"])
+
             
             #############
             ## leftStepModules : active during left step (left foot up)
             
             #left leg bend
-            self.walkModules["left step"]["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, stopRatio = 0.5)
-            self.walkModules["left step"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =2*CPGstepTime, amplitude = 40, offset = 10)
-            self.walkModules["left step"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -40, offset = -10)
-            #right leg gets straight
-             
-            #~ self.walkModules["left step"]["l_hip_z"] = CPGModule("l_hip_z", self.dt, cycleTime = twoStepsTime, startRatio=CPGDSTime/twoStepsTime, amplitude = 20.)
-            #~ self.robot.l_hip_z.compliant = True
+            #~ self.walkModules["left step"]["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = 4*CPGstepTime/3, amplitude = 20, startRatio = 0.125)
+            self.walkModules["left step"]["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = 4*CPGstepTime, amplitude = -5, offset = -5, startRatio = 0.25)
+            self.walkModules["left step"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =2*CPGstepTime, amplitude = 40, offset = 10, stopRatio=0.5)
+            self.walkModules["left step"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -40, offset = -0)
+
             
             #############
             ## rightStepModules : active during right step (right foot up)
             #right leg bent
-            self.walkModules["right step"]["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, stopRatio = 0.5)
-            self.walkModules["right step"]["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 40, offset = 10)
-            self.walkModules["right step"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime,amplitude = -40, offset = -10)
-            #left leg gets straight
-            #~ self.walkModules["right step"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -10, offset = 10)
-            #~ self.walkModules["right step"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 10, offset = -10)
-            
-            #~ self.walkModules["right step"]["r_hip_z"] = CPGModule("r_hip_z", self.dt, cycleTime = twoStepsTime , startRatio=CPGDSTime/twoStepsTime,  amplitude = -20.)
-            #~ self.robot.r_hip_z.compliant = True
-            
+            #~ self.walkModules["right step"]["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = 4*CPGstepTime/3, amplitude =20, startRatio = 0.125)
+            self.walkModules["right step"]["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = 4*CPGstepTime, amplitude =-5, offset = -5,startRatio = 0.25)
+            self.walkModules["right step"]["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 40, offset = 10, stopRatio=0.5)
+            self.walkModules["right step"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime,amplitude = -40, offset = -0)
+
             #############
             ## leftDoubleSupportModules : active during left double support phase (both feet down, left in front)
-            
-            #~ self.walkModules["left double support"]["r_hip_z"] = CPGModule("r_hip_z", self.dt, cycleTime = 4*CPGDSTime , startRatio=0.5, amplitude = 20.)
+
             
             #############
             ## rightDoubleSupportModules : active during right double support phase (both feet down, right in front)
-            
-            #~ self.walkModules["right double support"]["l_hip_z"] = CPGModule("l_hip_z", self.dt, cycleTime = 4*CPGDSTime , startRatio=0., amplitude = 20.)
+
             
         
         self.initTime = time.time()
@@ -244,6 +240,8 @@ class Walker:
         #~ print "time ",now - self.initTime
         if now - self.lastTime < self.dt:
             time.sleep(self.dt - now + self.lastTime)
+        else:
+            print "Warning, overtime! ",now - self.lastTime," instead of ",self.dt
         self.lastTime =  time.time()
         
         
@@ -303,6 +301,7 @@ class Walker:
                 if self.robot.l_shoulder_y.present_position < -80 and self.robot.r_shoulder_y.present_position < -80 :
                     self.initTime = time.time()
                     self.lastTime = self.initTime
+                    print "%%% put robot's arms down to stop walk %%%"
                     return True
                 #~ print self.robot.l_shoulder_y.present_position,  " ", self.robot.r_shoulder_y.present_position
                 self.waitForStepEnd()  
@@ -324,6 +323,20 @@ class Walker:
             self.doubleSupportLeft()
             self.stepSide = "right"
             self.stepRight()
+            
+    def mustStopWalk(self):
+        if self.robot is not None:
+            #safety : don't walk more than X seconds
+            if time.time() - self.initTime > 30:
+                print "walk timeout"
+                return True
+
+            if self.robot.l_shoulder_y.present_position < -20 or self.robot.r_shoulder_y.present_position < -20 :
+                return False
+                #~ print self.robot.l_shoulder_y.present_position,  " ", self.robot.r_shoulder_y.present_position
+
+        print "asked to stop walk"
+        return True
         
     def stopWalk(self):
         print "### stopping walk ###"
@@ -337,7 +350,7 @@ class Walker:
             for m in self.robot.motors:
                 m.goto_position(0.0,2., wait=False)
                 
-            time.sleep(0.5)
+            time.sleep(2)
             for m in self.robot.motors:
                 m.compliant = True
                 #~ self.robot.stand_position.start()
