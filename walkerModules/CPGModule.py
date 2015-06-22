@@ -47,7 +47,7 @@ class CPGModule(WalkerModule.WalkerModule):
     def reset(self, phase=""):
         
         if self.resetCondition == "always" or self.resetCondition==phase or (self.resetCondition == "on finished" and self.finished):
-            print "RESET ", self.resetCondition
+            #~ print "RESET ", self.resetCondition
             self.currentTime = self.startRatio*self.cycleTime
             self.finished = False
         

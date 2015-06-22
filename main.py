@@ -62,7 +62,7 @@ if HAS_REAL_ROBOT:
     for m in poppy.motors:
         m.goto_position(0.0, 1., wait=False)
       
-    time.sleep(5)    
+    time.sleep(2)    
 else:
     poppy = None
 
@@ -79,7 +79,7 @@ time.sleep(0.5)
 if walker.init():
     walker.startWalk()
 
-    for i in range(0,6):
+    for i in range(0,12):
         walker.oneStep()
 
     walker.stopWalk()

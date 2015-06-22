@@ -48,7 +48,7 @@ class Walker:
             #~ self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep2.json")    
             
             
-            CPGstepTime = 2. #time of step phase
+            CPGstepTime = 1.5#time of step phase
             CPGDSTime = 0.5 #time of double support phase
             twoStepsTime = 2*(CPGstepTime  + CPGDSTime)
             
@@ -69,23 +69,23 @@ class Walker:
             #~ self.walkModules["fullWalkModules"]["l_hip_z"] = AngularControl("constant", "l_hip_z", scale = 0.5) 
             #~ self.walkModules["fullWalkModules"]["r_hip_z"] = AngularControl("constant", "r_hip_z", scale = 0.5) 
             
-            self.walkModules["fullWalkModules"]["l_hip_z"] = CPGModule("l_hip_z", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio = 0.5, amplitude = -20., reset="never")
-            self.walkModules["fullWalkModules"]["r_hip_z"] = CPGModule("r_hip_z", self.dt, cycleTime = 2*(CPGstepTime+CPGDSTime) , startRatio =0., amplitude = 20., reset="never")
+            self.walkModules["fullWalkModules"]["l_hip_z"] = CPGModule("l_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime, startRatio = 0.5, amplitude = -10., disabledPhases=["right step"], reset="right double support")
+            self.walkModules["fullWalkModules"]["r_hip_z"] = CPGModule("r_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio =0., amplitude = -10., disabledPhases=["left step"], reset="left double support")
 
             #~self.walkModules["fullWalkModules"]["torso vertical"] = AngularControl("r_hip_x", "abs_x", inverse=True)
             
             
-            self.walkModules["fullWalkModules"]["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime =twoStepsTime, startRatio= 0., amplitude = -10, offset = 10, disabledPhases=["right step"], reset="never")
-            self.walkModules["fullWalkModules"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = twoStepsTime , startRatio= 0., amplitude = 10, offset = -10, disabledPhases=["right step"], reset="never")
+            self.walkModules["fullWalkModules"]["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime =twoStepsTime+2*CPGDSTime, startRatio= 0., amplitude = -10, offset = 10, disabledPhases=["right step"], reset="right double support")
+            self.walkModules["fullWalkModules"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio= 0., amplitude = 10, offset = -10, disabledPhases=["right step"], reset="right double support")
           
-            self.walkModules["fullWalkModules"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =twoStepsTime ,startRatio= 0.5,  amplitude = -10, offset = 10, disabledPhases=["left step"], reset="never")
-            self.walkModules["fullWalkModules"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = twoStepsTime , startRatio= 0.5, amplitude = 10, offset = -10, disabledPhases=["left step"], reset="never")           
+            self.walkModules["fullWalkModules"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =twoStepsTime+2*CPGDSTime ,startRatio= 0.,  amplitude = -10, offset = 10, disabledPhases=["left step"], reset="left double support")
+            self.walkModules["fullWalkModules"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio= 0., amplitude = 10, offset = -10, disabledPhases=["left step"], reset="left double support")           
             
             # balancing module
             #~ self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
             
             #logger module
-            self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "l_hip_y", "l_knee_y", "r_hip_y", "r_knee_y", "r_hip_z"])
+            self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "l_hip_y", "l_knee_y", "l_hip_z", "r_hip_y", "r_knee_y", "r_hip_z"])
             #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule(["r_hip_z", "l_hip_z"])
             
             #############
@@ -296,7 +296,7 @@ class Walker:
     
     def init(self):
         if self.robot is not None:
-            print "lift robot's arms to start walk"
+            print "%%% lift robot's arms to start walk %%%"
             counter = int(30./self.dt) #wait max 30 seconds
             while counter > 0:
                 counter -= 1
