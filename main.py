@@ -54,8 +54,9 @@ if HAS_REAL_ROBOT:
     poppy = createPoppyCreature()
 
     for m in poppy.motors:
+        #~ print m.torque_limit 
         m.compliant = False
-        m.max_torque = 80
+        #~ m.torque_limit = 150
         
     time.sleep(0.5)   
         
