@@ -37,7 +37,7 @@ class Walker:
             self.canLiftLeftFootModule = "fake"#name of a module implementing canLiftLeftFoot
             self.canLiftRightFootModule ="fake"   #name of a module implementing canLiftRightFoot
         else:
-            self.controlledMotors = self.robot.legs + self.robot.torso
+            self.controlledMotors = self.robot.motors #self.robot.legs + self.robot.torso
             
             self.leftFootLandedModule = "l_knee_y" #from left step module !
             self.rightFootLandedModule = "r_knee_y"
@@ -56,15 +56,17 @@ class Walker:
             ## walkModules : active during all phases
             
             #transfer weight
-            self.walkModules["fullWalkModules"]["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = twoStepsTime, startRatio = (2*CPGstepTime+CPGDSTime) /twoStepsTime, amplitude = 15., offset = 0, reset="never")
-            self.walkModules["fullWalkModules"]["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = twoStepsTime, startRatio = (CPGstepTime) /twoStepsTime, amplitude = -15., offset = 0, reset="never")
+            self.walkModules["fullWalkModules"]["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = twoStepsTime, startRatio = (2*CPGstepTime+CPGDSTime) /twoStepsTime, amplitude = 10., offset = 5., reset="never")
+            self.walkModules["fullWalkModules"]["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = twoStepsTime, startRatio = (CPGstepTime) /twoStepsTime, amplitude = -10., offset = -5., reset="never")
            
            #keep bust at 0
             self.walkModules["fullWalkModules"]["keep bust_x"] = AngularControl("constant", "bust_x", scale = 0.1)
-            self.walkModules["fullWalkModules"]["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.1)                   
-            self.walkModules["fullWalkModules"]["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.1)
-            self.walkModules["fullWalkModules"]["keep abs_y"] = AngularControl("constant", "abs_y", scale = 0.1) 
-            self.walkModules["fullWalkModules"]["keep abs_x"] = AngularControl("constant", "abs_x", scale = 0.1) 
+            self.walkModules["fullWalkModules"]["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.5)                   
+            self.walkModules["fullWalkModules"]["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.5)
+            
+            self.walkModules["fullWalkModules"]["keep abs_x"] = AngularControl("constant", "abs_y", scale = 0.8) 
+            
+            self.walkModules["fullWalkModules"]["keep abs_y"] = AngularControl("l_hip_x", "abs_x", scale = 0.5, referenceMaster= 5) 
             
             #~ self.walkModules["fullWalkModules"]["l_hip_z"] = AngularControl("constant", "l_hip_z", scale = 0.5) 
             #~ self.walkModules["fullWalkModules"]["r_hip_z"] = AngularControl("constant", "r_hip_z", scale = 0.5) 
@@ -90,7 +92,7 @@ class Walker:
             #~ self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
             
             #logger module
-            self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "l_ankle_y", "l_knee_y", "r_ankle_y"])#"l_hip_x", "l_hip_y", "l_hip_z"])
+            self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "l_ankle_y", "l_knee_y","l_hip_x", "l_hip_y", "l_hip_z"])
 
             
             #############
@@ -295,10 +297,22 @@ class Walker:
     def init(self):
         if self.robot is not None:
             print "%%% lift robot's arms to start walk %%%"
+            for m in self.robot.arms:
+                m.compliant = True
+            time.sleep(0.5)
+            self.robot.head_y.goal_position = -10
             counter = int(30./self.dt) #wait max 30 seconds
             while counter > 0:
                 counter -= 1
                 if self.robot.l_shoulder_y.present_position < -80 and self.robot.r_shoulder_y.present_position < -80 :
+                    #~ self.robot.l_shoulder_y.compliant = False
+                    #~ self.robot.l_shoulder_y.goal_position = -80
+                    
+                    #~ self.robot.r_shoulder_y.compliant = False
+                    #~ self.robot.r_shoulder_y.goal_position = -80
+                    #~ for m in self.robot.arms:
+                        #~ m.compliant = False
+                    #~ time.sleep(0.5)
                     self.initTime = time.time()
                     self.lastTime = self.initTime
                     print "%%% put robot's arms down to stop walk %%%"
@@ -329,6 +343,7 @@ class Walker:
             #safety : don't walk more than X seconds
             if time.time() - self.initTime > 30:
                 print "walk timeout"
+                self.robot.head_y.goal_position = 10
                 return True
 
             if self.robot.l_shoulder_y.present_position < -20 or self.robot.r_shoulder_y.present_position < -20 :
@@ -336,6 +351,7 @@ class Walker:
                 #~ print self.robot.l_shoulder_y.present_position,  " ", self.robot.r_shoulder_y.present_position
 
         print "asked to stop walk"
+        self.robot.head_y.goal_position = 10
         return True
         
     def stopWalk(self):

@@ -72,9 +72,7 @@ walker = Walker.Walker(poppy, razor)
 
 
 
-for m in poppy.arms:
-    m.compliant = True
-time.sleep(0.5)
+
 
 if walker.init():
     walker.startWalk()
