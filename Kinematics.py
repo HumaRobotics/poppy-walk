@@ -1,3 +1,4 @@
+from copy import deepcopy
 from numpy import *
 import time,sys
 
@@ -137,7 +138,8 @@ class Kinematics:
         # q[24] : r_ankle_y
         
         # for speed computation, store the old points and the date of computation
-        self.old_points = self.points.copy()
+        #~ self.old_points = self.points.copy()
+        self.old_points  = deepcopy(self.points)
         self.t_old_update = self.t_update
         
         # store the date of angle measure
@@ -1281,16 +1283,15 @@ class Kinematics:
     """
     def getSpeed(self, pointName):
         if self.points.has_key(pointName) and self.old_points.has_key(pointName):
-            if self.points[pointName].has_key("speed"):
-                return self.points[pointName]["speed"] 
             if self.points[pointName].has_key("position") and self.old_points[pointName].has_key("position"):
                 if self.t_update>self.t_old_update:
                     self.points[pointName]["speed"] =  (self.points[pointName]["position"]-self.old_points[pointName]["position"])/(self.t_update-self.t_old_update)
                     return self.points[pointName]["speed"]                            
                 else:
+                    print "no previous point"
                     return array([0.0,0.0,0.0])
             else:
-                raise Exception,"No position computed"
+                raise Exception,"No speed computed"
         else:
             raise Exception,"No point named: " + pointName
 
@@ -1309,14 +1310,15 @@ class Kinematics:
     def getAcceleration(self, pointName):
         if self.points.has_key(pointName):
             if self.old_points.has_key(pointName) and self.points[pointName].has_key("position") and self.old_points[pointName].has_key("position") :
-                if not self.points[pointName].has_key("speed"):
-                    self.getSpeed(pointName)
+                #~ if not self.points[pointName].has_key("speed"):
+                self.getSpeed(pointName)
                 if self.old_points[pointName].has_key("speed") and self.t_update>self.t_old_update:
                     return (self.points[pointName]["speed"]-self.old_points[pointName]["speed"])/(self.t_update-self.t_old_update)
                 else:
+                    print "no previous speed"
                     return array([0.0,0.0,0.0])
             else:
-                raise Exception,"No position computed"
+                raise Exception,"No acceleration computed"
         else:
             raise Exception,"No point named: " + pointName 
 

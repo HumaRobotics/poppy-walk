@@ -44,9 +44,11 @@ class ControlZMP(WalkerModule.WalkerModule):
             position = self.kinematics.getPosition("pelvis")
             #~ jacobian = self.kinematics.points["pelvis"]["jacobian"]
             #~ print jacobian
+            #~ speed = self.kinematics.getSpeed("pelvis")
             acceleration = self.kinematics.getAcceleration("pelvis")
-            #~ print position
-            #~ print acceleration
+            #~ print "position ",position
+            #~ print "speed ",speed
+            #~ print "acceleration ",acceleration
 
             
         except Exception,e: 
@@ -55,25 +57,34 @@ class ControlZMP(WalkerModule.WalkerModule):
             
         g = 9.81
         
-        xZMP = position[0] - acceleration[0]*9.81/(position[2])
-        yZMP = position[1] - acceleration[1]*9.81/(position[2])
+        xZMP = position[0] - acceleration[0]/(position[2]*9.81)
+        yZMP = position[1] - acceleration[1]/(position[2]*9.81)
         
-        self.logs["xZMP"].append(xZMP)
-        self.logs["yZMP"].append(yZMP)
+        if abs(xZMP) > 1 or abs(yZMP) > 1:
+            return motorNextPositions
+            
+        self.logs["xZMP"].append(100*xZMP)
+        self.logs["yZMP"].append(100*yZMP)
         
-        #~ print "pos ZMP ",[xZMP, yZMP]
+        print "pos ZMP ",[xZMP, yZMP]
         
         goalZMP = [0. , 0. ]
         coefX = 1.
-        coefY = -30.
+        coefY = -10.
         
         correctionX = coefX*(xZMP - goalZMP[0])
         correctionY = coefY*(yZMP - goalZMP[1])
         #~ print "correction Y ", correctionY
+        maxCorrection = 10
+        if correctionY > maxCorrection:
+            correctionY = maxCorrection
+        if correctionY < -maxCorrection:
+            correctionY = -maxCorrection
+            
         #~ self.logs["correction"].append(correctionY )
         
-        motorNextPositions["r_hip_x"] += correctionY
-        motorNextPositions["l_hip_x"] -= correctionY
+        #~ motorNextPositions["r_hip_x"] += correctionY
+        #~ motorNextPositions["l_hip_x"] -= correctionY
         
         
         

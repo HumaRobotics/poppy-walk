@@ -28,8 +28,6 @@ class Walker:
         self.walkModules["left step"] = {}
         self.walkModules["left double support"] = {}
         
-        # foot movement when not on the ground
-        
         if self.robot is None:
             self.walkModules["fullWalkModules"]["fake"] = MOCKWalkerModule() #mock module that implements footLanded, canLiftLeftFoot and canLiftRightFoot
             self.leftFootLandedModule = "fake" #name of a module implementing footLanded
@@ -85,12 +83,13 @@ class Walker:
             
             #ankle move: flat when landing, max bent when other foot is landing
             self.walkModules["fullWalkModules"]["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = twoStepsTime , startRatio= 0.25, amplitude =-5, offset= -5., reset="never")
-             self.walkModules["fullWalkModules"]["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = twoStepsTime , startRatio= 0.25, amplitude =5, offset= -5., reset="never")
+            self.walkModules["fullWalkModules"]["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = twoStepsTime , startRatio= 0.25, amplitude =5, offset= -5., reset="never")
             
             # balancing module
             #~ self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
             
             #logger module
+            #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "r_hip_x", "l_hip_x"])
             #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "l_ankle_y", "l_knee_y","l_hip_x", "l_hip_y", "l_hip_z"])
             
             #############
@@ -148,7 +147,7 @@ class Walker:
                 print "error could not read razor"    
                 
         #compute kinematics
-        self.kinematics.updateModel(array(motorPositionsList), razorData[0], razorData[1])
+        #~ self.kinematics.updateModel(array(motorPositionsList), razorData[0], razorData[1])
 
         return motorPositions
         
