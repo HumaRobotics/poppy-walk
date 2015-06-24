@@ -70,10 +70,6 @@ import Walker
 
 walker = Walker.Walker(poppy, razor)
 
-
-
-
-
 if walker.init():
     walker.startWalk()
 

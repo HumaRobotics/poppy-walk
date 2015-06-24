@@ -10,7 +10,7 @@ import random, time, copy
 from numpy import array, linspace
 
 class Walker:
-    def __init__(self, robot, razor):
+    def __init__(self, robot, razor=None):
         self.robot = robot
         self.dt = 0.05#seconds
         
@@ -59,8 +59,10 @@ class Walker:
            
            #keep bust straight
             self.walkModules["fullWalkModules"]["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.5)                   
-            self.walkModules["fullWalkModules"]["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.5)
+            #~ self.walkModules["fullWalkModules"]["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.5)
+            self.walkModules["fullWalkModules"]["keep abs_z"] = CPGModule("abs_z", self.dt, cycleTime = twoStepsTime, startRatio = 0., amplitude = 10., reset="never")
             self.walkModules["fullWalkModules"]["keep abs_y"] = AngularControl("constant", "abs_y", scale = 0.8) 
+            
             #bust oscillate to compensate moves from weight transfer
             self.walkModules["fullWalkModules"]["abs_x"] = AngularControl("l_hip_x", "abs_x", scale = 0.5, referenceMaster= 5) 
             self.walkModules["fullWalkModules"]["bust_x"] = AngularControl("l_hip_x", "bust_x", scale = 0.5, referenceMaster= 5) 
@@ -292,6 +294,7 @@ class Walker:
     #when true, walk starts
     #wait for arms to be lifted
     def init(self):
+        print "%%% lift robot's arms to start walk %%%"
         if self.robot is not None:
             
             #free arms

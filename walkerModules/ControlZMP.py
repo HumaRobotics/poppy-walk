@@ -63,8 +63,8 @@ class ControlZMP(WalkerModule.WalkerModule):
         if abs(xZMP) > 1 or abs(yZMP) > 1:
             return motorNextPositions
             
-        self.logs["xZMP"].append(100*xZMP)
-        self.logs["yZMP"].append(100*yZMP)
+        self.logs["xZMP"].append(xZMP)
+        self.logs["yZMP"].append(yZMP)
         
         print "pos ZMP ",[xZMP, yZMP]
         
