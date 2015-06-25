@@ -59,22 +59,22 @@ if HAS_REAL_ROBOT:
         
     time.sleep(0.5)   
         
-    for m in poppy.motors:
-        m.goto_position(0.0, 1., wait=False)
+    #~ for m in poppy.motors:
+        #~ m.goto_position(0.0, 1., wait=False)
       
-    time.sleep(2)    
+    #~ time.sleep(2)    
 else:
     poppy = None
 
-import Walker
+import Walker4 as Walker
 
 walker = Walker.Walker(poppy, razor)
 
 if walker.init():
     walker.startWalk()
 
-    #~ for i in range(0,6):
-    while not walker.mustStopWalk():
+    for i in range(0,4):
+    #~ while not walker.mustStopWalk():
         walker.oneStep()
 
     walker.stopWalk()

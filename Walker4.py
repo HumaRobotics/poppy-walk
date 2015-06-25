@@ -3,6 +3,7 @@ from walkerModules.WalkerModule import WalkerModule, AngularControl, LoggerModul
 from walkerModules.PlayJsonModule import PlayJsonModule
 from walkerModules.ControlZMP import ControlZMP, MOCKControlZMP
 from walkerModules.CPGModule import CPGModule
+from walkerModules.TrajectoryModule import TrajectoryModule
 import Kinematics
 
 import random, time, copy
@@ -37,76 +38,70 @@ class Walker:
         else:
             self.controlledMotors = self.robot.motors #self.robot.legs + self.robot.torso
             
-            self.leftFootLandedModule = "l_knee_y" #from left step module !
-            self.rightFootLandedModule = "r_knee_y"
-            self.canLiftLeftFootModule = "l_hip_x"
-            self.canLiftRightFootModule = "r_hip_x"    
+            self.walkModules["fullWalkModules"]["fake"] = MOCKWalkerModule() #mock module that implements footLanded, canLiftLeftFoot and canLiftRightFoot
+            self.leftFootLandedModule = "fake" #name of a module implementing footLanded
+            self.rightFootLandedModule = "fake"#name of a module implementing footLanded
+            self.canLiftLeftFootModule = "l_knee_y"#name of a module implementing canLiftLeftFoot
+            self.canLiftRightFootModule ="fake"   #name of a module implementing canLiftRightFoot
 
-            #~ self.rightStepModules["swingFoot"] = PlayJsonModule("json/rlegstep2.json")
-            #~ self.leftStepModules["swingFoot"] = PlayJsonModule("json/llegstep2.json")    
             
             
-            CPGstepTime = 1.5#time of step phase
-            CPGDSTime = 0.5 #time of double support phase
-            twoStepsTime = 2*(CPGstepTime  + CPGDSTime)
+            armTime = 1.5#time of step phase
+            legTime = 0.5 #time of double support phase
             
+            leg1Time = armTime+legTime
+            arm2Time = leg1Time+armTime
+            leg2Time = arm2Time + legTime
+            
+            times = [armTime, leg1Time, arm2Time, leg2Time]
+            
+            self.walkModules["fullWalkModules"]["r_elbow_y"] = TrajectoryModule("r_elbow_y", [-120, -90, -90, -90], times, self.dt) 
+            self.walkModules["fullWalkModules"]["r_shoulder_y"] = TrajectoryModule("r_shoulder_y", [-60, -90, -90, -90], times, self.dt) 
+           
+            self.walkModules["fullWalkModules"]["l_elbow_y"] = TrajectoryModule("l_elbow_y", [-90, -90, -120, -90], times, self.dt) 
+            self.walkModules["fullWalkModules"]["l_shoulder_y"] = TrajectoryModule("l_shoulder_y", [-90, -90, -60, -90], times, self.dt) 
+           
+            self.walkModules["fullWalkModules"]["l_knee_y"] = TrajectoryModule("l_knee_y", [90, 120, 90, 90], times, self.dt) 
+            self.walkModules["fullWalkModules"]["l_hip_y"] = TrajectoryModule("l_hip_y", [-90, -120, -90, -90], times, self.dt) 
+  
+            self.walkModules["fullWalkModules"]["r_knee_y"] = TrajectoryModule("r_knee_y", [90, 90, 90, 120], times, self.dt) 
+            self.walkModules["fullWalkModules"]["r_hip_y"] = TrajectoryModule("r_hip_y", [-90, -90, -90, -120], times, self.dt) 
+             
+             
+            self.walkModules["fullWalkModules"]["l_ankle_y"] = AngularControl("constant", "l_ankle_y", scale = 0.5,referenceMaster= 90) 
+            self.walkModules["fullWalkModules"]["l_hip_x"] = AngularControl("constant", "l_hip_x", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["l_hip_z"] = AngularControl("constant", "l_hip_z", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["l_shoulder_x"] = AngularControl("constant", "l_shoulder_x", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["l_arm_z"] = AngularControl("constant", "l_arm_z", scale = 0.5)
+            
+            self.walkModules["fullWalkModules"]["r_ankle_y"] = AngularControl("constant", "r_ankle_y", scale = 0.5, referenceMaster=-90) 
+            self.walkModules["fullWalkModules"]["r_hip_x"] = AngularControl("constant", "r_hip_x", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["r_hip_z"] = AngularControl("constant", "r_hip_z", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["r_shoulder_x"] = AngularControl("constant", "r_shoulder_x", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["r_arm_z"] = AngularControl("constant", "r_arm_z", scale = 0.5) 
+            
+            self.walkModules["fullWalkModules"]["head_y"] = AngularControl("constant", "head_y", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["head_z"] = AngularControl("constant", "head_z", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["bust_x"] = AngularControl("constant", "bust_x", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["bust_y"] = AngularControl("constant", "bust_y", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["abs_x"] = AngularControl("constant", "abs_x", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["abs_y"] = AngularControl("constant", "abs_y", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["abs_z"] = AngularControl("constant", "abs_z", scale = 0.5) 
+
             #############
             ## walkModules : active during all phases
-            
-            #transfer weight : full sinus, start at double support
-            self.walkModules["fullWalkModules"]["l_hip_x"] = CPGModule("l_hip_x", self.dt, cycleTime = twoStepsTime, startRatio = (2*CPGstepTime+CPGDSTime) /twoStepsTime, amplitude = 15., offset = 5., reset="never")
-            self.walkModules["fullWalkModules"]["r_hip_x"] = CPGModule("r_hip_x", self.dt, cycleTime = twoStepsTime, startRatio = (CPGstepTime) /twoStepsTime, amplitude = -15., offset = -5., reset="never")
            
-           #keep bust straight
-            self.walkModules["fullWalkModules"]["keep bust_y"] = AngularControl("constant", "bust_y", scale = 0.5)                   
-            #~ self.walkModules["fullWalkModules"]["keep abs_z"] = AngularControl("constant", "abs_z", scale = 0.5)
-            self.walkModules["fullWalkModules"]["keep abs_z"] = CPGModule("abs_z", self.dt, cycleTime = twoStepsTime, startRatio = 0., amplitude = 10., reset="never")
-            self.walkModules["fullWalkModules"]["keep abs_y"] = AngularControl("constant", "abs_y", scale = 0.8) 
-            
-            #bust oscillate to compensate moves from weight transfer
-            self.walkModules["fullWalkModules"]["abs_x"] = AngularControl("l_hip_x", "abs_x", scale = 0.5, referenceMaster= 5) 
-            self.walkModules["fullWalkModules"]["bust_x"] = AngularControl("l_hip_x", "bust_x", scale = 0.5, referenceMaster= 5) 
-            
-            #move the leg on y to avoid passing through other leg. Keep constant otherwise
-            self.walkModules["fullWalkModules"]["l_hip_z"] = CPGModule("l_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime, startRatio = 0.5, amplitude = -30., disabledPhases=["right step", "left step"], reset="right double support")
-            self.walkModules["left step"]["l_hip_z"] = CPGModule("l_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime, amplitude = 0., offset = 15)
-            self.walkModules["right step"]["l_hip_z"] = CPGModule("l_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime, amplitude = 0., offset = 0)
-            
-            self.walkModules["fullWalkModules"]["r_hip_z"] = CPGModule("r_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio =0., amplitude = -30., disabledPhases=["left step", "right step"], reset="left double support")
-            self.walkModules["left step"]["r_hip_z"] = CPGModule("r_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime, amplitude = 0., offset = 0)
-            self.walkModules["right step"]["r_hip_z"] = CPGModule("r_hip_z", self.dt, cycleTime = twoStepsTime+2*CPGDSTime, amplitude = 0., offset = -15)
-
-            #when not lifted, leg goes straight 
-            self.walkModules["fullWalkModules"]["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime =twoStepsTime+2*CPGDSTime, startRatio= 0., amplitude = -20, offset = 20, disabledPhases=["right step"], reset="right double support")
-            self.walkModules["fullWalkModules"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio= 0., amplitude =10, offset = -0, disabledPhases=["right step"], reset="right double support")
-            
-            self.walkModules["fullWalkModules"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =twoStepsTime+2*CPGDSTime ,startRatio= 0.,  amplitude = -20, offset = 20, disabledPhases=["left step"], reset="left double support")
-            self.walkModules["fullWalkModules"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = twoStepsTime+2*CPGDSTime , startRatio= 0., amplitude = 10, offset = -0, disabledPhases=["left step"], reset="left double support")           
-            
-            #ankle move: flat when landing, max bent when other foot is landing
-            self.walkModules["fullWalkModules"]["r_ankle_y"] = CPGModule("r_ankle_y", self.dt, cycleTime = twoStepsTime , startRatio= 0.25, amplitude =-5, offset= -5., reset="never")
-            self.walkModules["fullWalkModules"]["l_ankle_y"] = CPGModule("l_ankle_y", self.dt, cycleTime = twoStepsTime , startRatio= 0.25, amplitude =5, offset= -5., reset="never")
-            
-            # balancing module
-            #~ self.walkModules["fullWalkModules"]["ZMPbalancing"] = ControlZMP(self.kinematics)
-            
             #logger module
             #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "r_hip_x", "l_hip_x"])
             #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "l_ankle_y", "l_knee_y","l_hip_x", "l_hip_y", "l_hip_z"])
             
             #############
             ## leftStepModules : active during left step (left foot up)
-            
-            #left leg lift
-            self.walkModules["left step"]["l_knee_y"] = CPGModule("l_knee_y", self.dt, cycleTime =2*CPGstepTime, amplitude = 50, offset = 20, stopRatio=0.5)
-            self.walkModules["left step"]["l_hip_y"] = CPGModule("l_hip_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = -35, offset = -0)
+
 
             
             #############
             ## rightStepModules : active during right step (right foot up)
-            #right leg lift
-            self.walkModules["right step"]["r_knee_y"] = CPGModule("r_knee_y", self.dt, cycleTime = 2*CPGstepTime, amplitude = 50, offset = 20, stopRatio=0.5)
-            self.walkModules["right step"]["r_hip_y"] = CPGModule("r_hip_y", self.dt, cycleTime = 2*CPGstepTime,amplitude = -35, offset = -0)
 
             #############
             ## leftDoubleSupportModules : active during left double support phase (both feet down, left in front)
@@ -138,7 +133,8 @@ class Walker:
                 motorPositions[m] = random.randint(-20, 20)
                 motorPositionsList[self.kinematics.articulationNames.index(m)] =motorPositions[m]
                 
-        #~ print motorPositions
+        #~ print "motor positions ",motorPositions.keys()
+        #~ print "motor positions ",motorPositions.values()
         
         #read razor data
         razorData = [0., 0.]
@@ -172,7 +168,6 @@ class Walker:
             m.reset(phase=phase)
         
     def setMotorPositions(self, positions):
-        pass
         if self.robot is not None:
             #~ self.robot.goto_position(positions, self.dt, wait=False) #longer. Dummy method equivalent to speed control
             for m in self.controlledMotors:
@@ -226,9 +221,13 @@ class Walker:
             motorNextPositions = m.execute(motorPositions, motorNextPositions, phase=phase)
             #~ print m#, " ",motorNextPositions.keys()
             
+            
+        #~ print "next position ",motorNextPositions.keys()
+        
+        #~ print "next position ",motorNextPositions.values()
         #Apply modified values
-        self.setMotorPositions(motorNextPositions)
-        #~ self.setMotorSpeeds(motorNextPositions, motorPositions)
+        #~ self.setMotorPositions(motorNextPositions)
+        self.setMotorSpeeds(motorNextPositions, motorPositions)
         #~ self.moveMotors(motorNextPositions, motorPositions)
         
 #make sure we have self.dt time between each step. Print a warning if overtime
@@ -251,7 +250,7 @@ class Walker:
 
         self.initPhase("right step")
   
-        while not self.walkModules["right step"][self.rightFootLandedModule ].footLanded():
+        while not self.walkModules["fullWalkModules"][self.rightFootLandedModule ].footLanded():
             
             self.executeModules("right step")
             self.waitForStepEnd()
@@ -262,7 +261,7 @@ class Walker:
 
         self.initPhase("left step")
   
-        while not self.walkModules["left step"][self.leftFootLandedModule ].footLanded():
+        while not self.walkModules["fullWalkModules"][self.leftFootLandedModule ].footLanded():
             
             self.executeModules("left step")
             self.waitForStepEnd()
@@ -294,50 +293,39 @@ class Walker:
     #when true, walk starts
     #wait for arms to be lifted
     def init(self):
+        
+        return True
 
-        if self.robot is not None:
-            
-            #free arms
-            for m in self.robot.arms:
-                m.compliant = True
-            time.sleep(0.5)
-            
-            #look up
-            self.robot.head_y.goal_position = -10
-            
-            #init time to avoid overtime warning
-            self.lastTime = time.time()
-            
-            print "%%% lift robot's arms to start walk %%%"
-            
-            counter = int(30./self.dt) #wait max 30 seconds
-            while counter > 0:
-                counter -= 1
-                #~ print self.robot.l_shoulder_y.present_position,  " ", self.robot.r_shoulder_y.present_position
-                if self.robot.l_shoulder_y.present_position < -80 and self.robot.r_shoulder_y.present_position < -80 :
-                    print "%%% starting walk %%%"
-                    
-                    #arms not compliants and 
-                    for m in self.robot.arms:
-                        m.compliant = False
-                    #except for shoulder_y
-                    self.robot.l_shoulder_y.compliant = True
-                    self.robot.r_shoulder_y.compliant =True
-
-                    #init time
-                    self.initTime = time.time()
-                    self.lastTime = self.initTime
-                    print "%%% put robot's arms down to stop walk %%%"
-                    return True
-                 
-                #if arms not in position, wait self.dt and retry
-                self.waitForStepEnd()  
-                
-        print "arms have not been raised"
-        return False
         
     def startWalk(self):
-        pass
+        initPos = {}
+        initPos["head_y"] = 0.0
+        initPos["head_z"] = -10.0
+        initPos["r_shoulder_y"] = -90.0
+        initPos["r_shoulder_x"] = 0.0
+        initPos["r_arm_z"] = 0.0
+        initPos["r_elbow_y"] = -90.0
+        initPos["l_shoulder_y"] = -90.0
+        initPos["l_shoulder_x"] = 0.0
+        initPos["l_arm_z"] = 0.0
+        initPos["l_elbow_y"] = -90.0
+        initPos["r_hip_z"] = 0.0
+        initPos["r_hip_y"] = -90.0
+        initPos["r_hip_x"] = 0.0
+        initPos["r_knee_y"] = 90.0
+        initPos["r_ankle_y"] = 90.0
+        initPos["l_hip_z"] = 0.0
+        initPos["l_hip_y"] = -90.0
+        initPos["l_hip_x"] = 0.0
+        initPos["l_knee_y"] = 90.0
+        initPos["l_ankle_y"] = 90.0
+        initPos["bust_x"] = 0.0
+        initPos["bust_y"] = 0.0
+        initPos["abs_x"] = 0.0
+        initPos["abs_y"] = 0.0
+        initPos["abs_z"] = 0.0
+        
+        self.robot.goto_position(initPos, 3., wait=True)
         
         
             

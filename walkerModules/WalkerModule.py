@@ -58,7 +58,7 @@ class MOCKWalkerModule(WalkerModule):
     def canLiftRightFoot(self):
         return self.randomBoolean()
         
-    def randomBoolen(self):
+    def randomBoolean(self):
         #MOCK
         r = random.randint(0, 50)
         if r == 0:
