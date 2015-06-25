@@ -46,8 +46,8 @@ class Walker:
 
             
             
-            armTime = 1.5#time of step phase
-            legTime = 0.5 #time of double support phase
+            armTime = 1.#time of step phase
+            legTime = 1. #time of double support phase
             
             leg1Time = armTime+legTime
             arm2Time = leg1Time+armTime
@@ -61,22 +61,24 @@ class Walker:
             self.walkModules["fullWalkModules"]["l_elbow_y"] = TrajectoryModule("l_elbow_y", [-90, -90, -120, -90], times, self.dt) 
             self.walkModules["fullWalkModules"]["l_shoulder_y"] = TrajectoryModule("l_shoulder_y", [-90, -90, -60, -90], times, self.dt) 
            
-            self.walkModules["fullWalkModules"]["l_knee_y"] = TrajectoryModule("l_knee_y", [90, 120, 90, 90], times, self.dt) 
-            self.walkModules["fullWalkModules"]["l_hip_y"] = TrajectoryModule("l_hip_y", [-90, -120, -90, -90], times, self.dt) 
+            self.walkModules["fullWalkModules"]["l_knee_y"] = TrajectoryModule("l_knee_y", [90, 120, 90, 70], times, self.dt) 
+            self.walkModules["fullWalkModules"]["l_hip_y"] = TrajectoryModule("l_hip_y", [-90, -120, -90, -70], times, self.dt) 
   
-            self.walkModules["fullWalkModules"]["r_knee_y"] = TrajectoryModule("r_knee_y", [90, 90, 90, 120], times, self.dt) 
-            self.walkModules["fullWalkModules"]["r_hip_y"] = TrajectoryModule("r_hip_y", [-90, -90, -90, -120], times, self.dt) 
+            self.walkModules["fullWalkModules"]["r_knee_y"] = TrajectoryModule("r_knee_y", [90, 70, 90, 120], times, self.dt) 
+            self.walkModules["fullWalkModules"]["r_hip_y"] = TrajectoryModule("r_hip_y", [-90, -70, -90, -120], times, self.dt) 
+            
+            self.walkModules["fullWalkModules"]["abs_z"] = TrajectoryModule("abs_z", [-15, -15,15, 15], times, self.dt) 
              
              
             self.walkModules["fullWalkModules"]["l_ankle_y"] = AngularControl("constant", "l_ankle_y", scale = 0.5,referenceMaster= 90) 
             self.walkModules["fullWalkModules"]["l_hip_x"] = AngularControl("constant", "l_hip_x", scale = 0.5) 
-            self.walkModules["fullWalkModules"]["l_hip_z"] = AngularControl("constant", "l_hip_z", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["l_hip_z"] = AngularControl("constant", "l_hip_z", scale = 0.5,referenceMaster= 20) 
             self.walkModules["fullWalkModules"]["l_shoulder_x"] = AngularControl("constant", "l_shoulder_x", scale = 0.5) 
             self.walkModules["fullWalkModules"]["l_arm_z"] = AngularControl("constant", "l_arm_z", scale = 0.5)
             
-            self.walkModules["fullWalkModules"]["r_ankle_y"] = AngularControl("constant", "r_ankle_y", scale = 0.5, referenceMaster=-90) 
+            self.walkModules["fullWalkModules"]["r_ankle_y"] = AngularControl("constant", "r_ankle_y", scale = 0.5, referenceMaster=90) 
             self.walkModules["fullWalkModules"]["r_hip_x"] = AngularControl("constant", "r_hip_x", scale = 0.5) 
-            self.walkModules["fullWalkModules"]["r_hip_z"] = AngularControl("constant", "r_hip_z", scale = 0.5) 
+            self.walkModules["fullWalkModules"]["r_hip_z"] = AngularControl("constant", "r_hip_z", scale = 0.5,referenceMaster= -20) 
             self.walkModules["fullWalkModules"]["r_shoulder_x"] = AngularControl("constant", "r_shoulder_x", scale = 0.5) 
             self.walkModules["fullWalkModules"]["r_arm_z"] = AngularControl("constant", "r_arm_z", scale = 0.5) 
             
@@ -86,14 +88,13 @@ class Walker:
             self.walkModules["fullWalkModules"]["bust_y"] = AngularControl("constant", "bust_y", scale = 0.5) 
             self.walkModules["fullWalkModules"]["abs_x"] = AngularControl("constant", "abs_x", scale = 0.5) 
             self.walkModules["fullWalkModules"]["abs_y"] = AngularControl("constant", "abs_y", scale = 0.5) 
-            self.walkModules["fullWalkModules"]["abs_z"] = AngularControl("constant", "abs_z", scale = 0.5) 
+            #~ self.walkModules["fullWalkModules"]["abs_z"] = AngularControl("constant", "abs_z", scale = 0.5) 
 
             #############
             ## walkModules : active during all phases
            
             #logger module
-            #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "r_hip_x", "l_hip_x"])
-            #~ self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "l_ankle_y", "l_knee_y","l_hip_x", "l_hip_y", "l_hip_z"])
+            self.walkModules["fullWalkModules"]["logger"] = LoggerModule([ "r_elbow_y", "r_shoulder_y","r_knee_y", "r_hip_y"])
             
             #############
             ## leftStepModules : active during left step (left foot up)
