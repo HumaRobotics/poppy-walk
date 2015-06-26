@@ -63,27 +63,31 @@ class Walker:
            
             self.walkModules["fullWalkModules"]["l_knee_y"] = TrajectoryModule("l_knee_y", [90, 120, 90, 70], times, self.dt) 
             self.walkModules["fullWalkModules"]["l_hip_y"] = TrajectoryModule("l_hip_y", [-90, -120, -90, -70], times, self.dt) 
+            self.walkModules["fullWalkModules"]["l_ankle_y"] = TrajectoryModule("l_ankle_y", [90, 90, 60, 90], times, self.dt) 
   
             self.walkModules["fullWalkModules"]["r_knee_y"] = TrajectoryModule("r_knee_y", [90, 70, 90, 120], times, self.dt) 
             self.walkModules["fullWalkModules"]["r_hip_y"] = TrajectoryModule("r_hip_y", [-90, -70, -90, -120], times, self.dt) 
+            self.walkModules["fullWalkModules"]["r_ankle_y"] = TrajectoryModule("r_ankle_y", [60, 90, 90, 90], times, self.dt) 
             
             self.walkModules["fullWalkModules"]["abs_z"] = TrajectoryModule("abs_z", [-15, -15,15, 15], times, self.dt) 
+            
+            self.walkModules["fullWalkModules"]["head_z"] = TrajectoryModule("head_z", [15, 0,-15, 0], times, self.dt) 
              
              
-            self.walkModules["fullWalkModules"]["l_ankle_y"] = AngularControl("constant", "l_ankle_y", scale = 0.5,referenceMaster= 90) 
+            #~ self.walkModules["fullWalkModules"]["l_ankle_y"] = AngularControl("constant", "l_ankle_y", scale = 0.5,referenceMaster= 90) 
             self.walkModules["fullWalkModules"]["l_hip_x"] = AngularControl("constant", "l_hip_x", scale = 0.5) 
-            self.walkModules["fullWalkModules"]["l_hip_z"] = AngularControl("constant", "l_hip_z", scale = 0.5,referenceMaster= 20) 
+            self.walkModules["fullWalkModules"]["l_hip_z"] = AngularControl("constant", "l_hip_z", scale = 0.5,referenceMaster= 15) 
             self.walkModules["fullWalkModules"]["l_shoulder_x"] = AngularControl("constant", "l_shoulder_x", scale = 0.5) 
             self.walkModules["fullWalkModules"]["l_arm_z"] = AngularControl("constant", "l_arm_z", scale = 0.5)
             
-            self.walkModules["fullWalkModules"]["r_ankle_y"] = AngularControl("constant", "r_ankle_y", scale = 0.5, referenceMaster=90) 
+            #~ self.walkModules["fullWalkModules"]["r_ankle_y"] = AngularControl("constant", "r_ankle_y", scale = 0.5, referenceMaster=90) 
             self.walkModules["fullWalkModules"]["r_hip_x"] = AngularControl("constant", "r_hip_x", scale = 0.5) 
-            self.walkModules["fullWalkModules"]["r_hip_z"] = AngularControl("constant", "r_hip_z", scale = 0.5,referenceMaster= -20) 
+            self.walkModules["fullWalkModules"]["r_hip_z"] = AngularControl("constant", "r_hip_z", scale = 0.5,referenceMaster= -15) 
             self.walkModules["fullWalkModules"]["r_shoulder_x"] = AngularControl("constant", "r_shoulder_x", scale = 0.5) 
             self.walkModules["fullWalkModules"]["r_arm_z"] = AngularControl("constant", "r_arm_z", scale = 0.5) 
             
             self.walkModules["fullWalkModules"]["head_y"] = AngularControl("constant", "head_y", scale = 0.5) 
-            self.walkModules["fullWalkModules"]["head_z"] = AngularControl("constant", "head_z", scale = 0.5) 
+            #~ self.walkModules["fullWalkModules"]["head_z"] = AngularControl("constant", "head_z", scale = 0.5) 
             self.walkModules["fullWalkModules"]["bust_x"] = AngularControl("constant", "bust_x", scale = 0.5) 
             self.walkModules["fullWalkModules"]["bust_y"] = AngularControl("constant", "bust_y", scale = 0.5) 
             self.walkModules["fullWalkModules"]["abs_x"] = AngularControl("constant", "abs_x", scale = 0.5) 
@@ -156,10 +160,10 @@ class Walker:
         print "time ",time.time()- self.initTime
         
         #change reference frame for kinematics
-        if phase == "left step" or phase == "right double support":
-            self.kinematics.refFrame = "RFoot"
-        else:
-            self.kinematics.refFrame = "LFoot"
+        #~ if phase == "left step" or phase == "right double support":
+            #~ self.kinematics.refFrame = "RFoot"
+        #~ else:
+            #~ self.kinematics.refFrame = "LFoot"
             
         #reset modules
         for m in self.walkModules[phase].values():
@@ -310,12 +314,12 @@ class Walker:
         initPos["l_shoulder_x"] = 0.0
         initPos["l_arm_z"] = 0.0
         initPos["l_elbow_y"] = -90.0
-        initPos["r_hip_z"] = 0.0
+        initPos["r_hip_z"] = -15.0
         initPos["r_hip_y"] = -90.0
         initPos["r_hip_x"] = 0.0
         initPos["r_knee_y"] = 90.0
         initPos["r_ankle_y"] = 90.0
-        initPos["l_hip_z"] = 0.0
+        initPos["l_hip_z"] = 15.0
         initPos["l_hip_y"] = -90.0
         initPos["l_hip_x"] = 0.0
         initPos["l_knee_y"] = 90.0
@@ -367,11 +371,41 @@ class Walker:
 
             time.sleep(0.5)
             
+            initPos = {}
+            initPos["head_y"] = 0.0
+            initPos["head_z"] = 0.0
+            initPos["r_shoulder_y"] = -90.0
+            initPos["r_shoulder_x"] = 0.0
+            initPos["r_arm_z"] = 0.0
+            initPos["r_elbow_y"] = 0.0
+            initPos["l_shoulder_y"] = -90.0
+            initPos["l_shoulder_x"] = 0.0
+            initPos["l_arm_z"] = 0.0
+            initPos["l_elbow_y"] = 0.0
+            initPos["r_hip_z"] = -15.0
+            initPos["r_hip_y"] = -90.0
+            initPos["r_hip_x"] = 0.0
+            initPos["r_knee_y"] = 150.0
+            initPos["r_ankle_y"] = 90.0
+            initPos["l_hip_z"] = 15.0
+            initPos["l_hip_y"] = -90.0
+            initPos["l_hip_x"] = 0.0
+            initPos["l_knee_y"] = 150.0
+            initPos["l_ankle_y"] = 90.0
+            initPos["bust_x"] = 0.0
+            initPos["bust_y"] = 0.0
+            initPos["abs_x"] = 0.0
+            initPos["abs_y"] = 0.0
+            initPos["abs_z"] = 0.0
+            
+            self.robot.goto_position(initPos, 3., wait=True)
+        
+            
             #slowly return to zero position
-            for m in self.robot.motors:
-                m.goto_position(0.0,2., wait=False)
+            #~ for m in self.robot.motors:
+                #~ m.goto_position(0.0,2., wait=False)
             print "%%% Warning, I will remove compliance! %%%"                
-            time.sleep(2)
+            #~ time.sleep(2)
             
             #remove compliance
             for m in self.robot.motors:

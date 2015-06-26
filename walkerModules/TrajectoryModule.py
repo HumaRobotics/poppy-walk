@@ -24,7 +24,7 @@ class TrajectoryModule(WalkerModule.WalkerModule):
         if self.finished:
             self.finished = False
             self.currentTime = 0
-            print "restarting"
+            #~ print "restarting"
             #~ print "move ",self.filename," finished"
             #~ return motorNextPositions
         nextTime = -1

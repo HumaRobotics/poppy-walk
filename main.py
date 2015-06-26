@@ -73,7 +73,7 @@ walker = Walker.Walker(poppy, razor)
 if walker.init():
     walker.startWalk()
 
-    for i in range(0,4):
+    for i in range(0,1):
     #~ while not walker.mustStopWalk():
         walker.oneStep()
 
