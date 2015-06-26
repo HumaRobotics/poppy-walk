@@ -69,7 +69,7 @@ class Walker:
             self.walkModules["fullWalkModules"]["r_hip_y"] = TrajectoryModule("r_hip_y", [-90, -70, -90, -120], times, self.dt) 
             self.walkModules["fullWalkModules"]["r_ankle_y"] = TrajectoryModule("r_ankle_y", [60, 90, 90, 90], times, self.dt) 
             
-            self.walkModules["fullWalkModules"]["abs_z"] = TrajectoryModule("abs_z", [-15, -15,15, 15], times, self.dt) 
+            self.walkModules["fullWalkModules"]["abs_z"] = TrajectoryModule("abs_z", [-10, -10,10, 10], times, self.dt) 
             
             self.walkModules["fullWalkModules"]["head_z"] = TrajectoryModule("head_z", [15, 0,-15, 0], times, self.dt) 
              
@@ -383,12 +383,12 @@ class Walker:
             initPos["l_arm_z"] = 0.0
             initPos["l_elbow_y"] = 0.0
             initPos["r_hip_z"] = -15.0
-            initPos["r_hip_y"] = -90.0
+            initPos["r_hip_y"] = -120.0
             initPos["r_hip_x"] = 0.0
             initPos["r_knee_y"] = 150.0
             initPos["r_ankle_y"] = 90.0
             initPos["l_hip_z"] = 15.0
-            initPos["l_hip_y"] = -90.0
+            initPos["l_hip_y"] = -120.0
             initPos["l_hip_x"] = 0.0
             initPos["l_knee_y"] = 150.0
             initPos["l_ankle_y"] = 90.0
@@ -397,6 +397,13 @@ class Walker:
             initPos["abs_x"] = 0.0
             initPos["abs_y"] = 0.0
             initPos["abs_z"] = 0.0
+            
+            self.robot.goto_position(initPos, 3., wait=True)
+            
+            initPos["l_hip_y"] = -45.0
+            initPos["r_hip_y"] = -45.0
+            initPos["r_shoulder_y"] = -45.0
+            initPos["l_shoulder_y"] = -45.0
             
             self.robot.goto_position(initPos, 3., wait=True)
         
